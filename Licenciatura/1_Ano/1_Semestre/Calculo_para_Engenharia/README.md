@@ -1,7 +1,6 @@
 # 📐 Cálculo para Engenharia
 
 **Ano:** 1º Ano | **Semestre:** 1º Semestre
-**Nota Final:** [Insere a tua nota aqui, ex: 15/20] (Opcional)
 
 ## 📌 Sobre a Cadeira
 Esta unidade curricular aborda os conceitos fundamentais do análise matemática e cálculo infinitesimal em $\mathbb{R}$, essenciais para a modelação de problemas físicos e algoritmos de engenharia.
