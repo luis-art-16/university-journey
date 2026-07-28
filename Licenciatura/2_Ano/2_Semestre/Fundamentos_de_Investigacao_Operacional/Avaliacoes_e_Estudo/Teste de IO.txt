@@ -1,0 +1,125 @@
+Teste de IO
+
+1(20%)
+Uma empresa tem quatro fábricas (F1 a F4) onde pode produzir seis produtos (P1 a P6). Os custos de produção de cada unidade de cada produto em cada fábrica (em U.M.) são dados na tabela.
+Para o próximo mês as quantidades a produzir dos seis produtos são: 100, 200, 150, 300, 80, 120 (de P1 a P6). As capacidades de produção das fábricas são 200, 200, 300, 300(de F1 a F4).
+
+P1P2P3P4P5P6F1567432F2234793F3135793F4726182
+a) Apresente um modelo de programação matemática de forma que permita definir quais as quantidades a produzir cada produto em cada fábrica de forma a minimizar o custo total.
+b) Considere agora que as fábricas podem produzir qualquer quantidade, mas existe um custo adicional de 300 U.M. em cada fábrica em que haja produção. Por exemplo, se as fábricas F1 e F2 produzirem (qualquer quantidade), existe um custo adicional de 600 U.M..Apresente um modelo de programação matemática.
+c) Considere de novo que as fábricas podem produzir qualquer quantidade mas que existe, em cada fábrica, por cada 80 unidades produzidas, existe um custo adicional de 150 U.M. Por exemplo, se na fábrica F1 se produzirem 170 unidades, o custo adicional é de 450 U.M. Apresente um modelo de programação matemática. 
+
+Respostas:
+a) Modelo de Programação Linear para Minimização de Custos de Produção
+Dados:
+Produtos: P1, P2, P3, P4, P5, P6
+Fábricas: F1, F2, F3, F4
+Custos de produção cij na tabela 
+Quantidades a Produzir:
+Q = [100,200,150,300,80,120] de (P1 a P6)
+Capacidades de Produção das Fábricas:
+C= [200,200,300,300] (de F1 a F4)
+Modelo:
+
+b) Modelo com Custo Adicional por Fábrica Utilizada
+
+
+c) Modelo com Custo Adicional por Cada 80 Unidades Produzidas
+
+2. (…)
+Considere a rede abaixo. 
+
+
+
+
+
+
+
+a) Apresente um modelo de programação matemática para o problema de determinar o caminho mais curto entre os nodos 1 e 7.
+b) Qual(is) a(s) modificação(ões) ao modelo no caso de existir um custo adicional de 5 se for usado pelo menos um dos três arcos: (1,3) , (2,5) e (4,7)?
+
+Respostas: 
+
+
+3.(15%)
+…
+4.(15%)
+Considere um problema de afetação de quatro agentes a quatro tarefas para o qual foi concebido um modelo de programação linear do qual se apresenta uma parte:   Min 10(x11) + 9 (x12) +…+10(x43) + x44
+s.a: x11 + x12 +x13 +x14 = 1
+x21 + x22 + x23 +x24 = 1
+…
+BCDEIGJKLMN2      109313      95224      410475      10810167    89     Indique a que corresponderia cada conjunto de células assinaladas na figura e referidas abaixo: variáveis de decisão, lado esquerdo de restrições, termos independentes ou função objetivo. Indique também se devem ser deixadas em branco, quais as fórmulas que devem ser inseridas nas células ou a constante que devem ter.
+a) B7:E7, b) B2:E5, c) B9:E9, d) J9, e) I2:I5, f) G2:G5
+
+
+Resposta:
+a) Variáveis de decisão
+b) Lado esquerdo de restrições (Coeficientes das variáveis de restrição)
+c) Termos independentes das restrições (valores constantes nas restrições)
+d) Função objetivo J9 (coeficientes na função objetivo)
+e) Constantes/Fórmulas nas células
+f) Branco
+
+5.(10%)
+Considere a seguinte árvore de pesquisa que resulta da aplicação do método de partição e avaliação a um modelo de programação inteira. Como assinalado, o subproblema do nodo C é impossível e o nodo F tem uma solução inteira. Os subproblemas dos nodos E e H têm uma solução ótima fracionária e o nodo I não foi resolvido.
+a) A solução ótima do problema inteiro foi encontrada? Se sim, indique-a. Se não, o intervalo mais apertado no qual está incluído o valor da solução ótima. Em qualquer dos casos, justifique.
+b) Qual o intervalo de optimalidade relativo?
+c) Quais os nodos que devem gerar descendentes?
+
+
+
+
+
+
+
+
+
+
+
+6(15%)
+Considere o problema do caixeiro-viajante com cinco vértices e as distâncias indicadas na tabela.
+123451-12178212-310313-5184755-951012189-
+
+a) Aplique a heurística do vizinho mais próximo, partindo do vértice 1. Apresente a solução e indique o seu valor.
+b) Aplique a heurística da aresta de menor custo, explicitando os passos a efetuar. Apresente a solução e indique o seu valor.
+Respostas:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+7(10%)
+A direção de um serviço está a estudar a forma de o melhorar. Atualmente, o serviço funciona com um trabalhador que pode atender até 10 clientes por hora. A direção pondera alocar mais um colaborador ao serviço ou abrir um outro local de atendimento independente do atual.
+Estima-se que procurem o serviço 8 clientes por hora.
+Compare as três situações em termos de tempos médios de espera.
+* Resultados para uma fila de espera M/M/1
+?= ?/ ?
+?0=1- ?
+?n= (?^n)*(?0) = (?^n)*(1- ?) , n >= 1
+Lq = (?^2) / 1 – ?
+Ls = ?
+L = ?/ (1- ?)
+
+==> Probabilidade do tempo de permanência na fila exceder o valor t
+Wq(t) = ?, para t = 0 e ?*(e^- ?*(1- ?)*t, para t>=0
+
+Wq = ?/ ? *(1- ?)
+Ws = 1/ ?
+W = 1 / ? *(1- ?)
+
+
+Respostas:
+
