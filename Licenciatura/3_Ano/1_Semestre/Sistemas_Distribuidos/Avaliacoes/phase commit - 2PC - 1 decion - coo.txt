@@ -1,0 +1,84 @@
+phase commit - 2PC - 1 decion - coordenator wait for decion
+
+
+Participant failure  1PC - coordenator don´t wait and take a decion alertando todos os participantes
+
+
+coordinator failure - 
+
+
+
+Perguntas:
+
+1. Necessidade de migração de código cliente para o servidor e modelo de threading dequeado para o servidor
+Migração de código cliente para o servidor:
+
+Desempenho: Ao mover lógica do cliente para o servidor, reduz-se a quantidade de dados trafegados na rede e melhora-se o tempo de resposta, já que as operações podem ser realizadas diretamente no servidor.
+Segurança: Mantendo a lógica sensível no servidor, evita-se que os clientes manipulem ou modifiquem o código, aumentando a integridade dos dados.
+
+Consistência: Centralizar operações no servidor facilita a aplicação de regras e sincronização de dados, evitando discrepâncias entre diferentes clientes.
+Capacidade do cliente: Nem todos os clientes possuem recursos suficientes para executar código complexo; movê-lo para o servidor alivia essa carga.
+Modelo de threading dequeado:
+
+Este modelo usa uma fila (deque) para gerenciar requisições recebidas dos clientes.
+
+Funcionamento:
+As requisições são enfileiradas.
+Threads disponíveis retiram requisições da fila para processamento.
+
+Vantagens:
+Eficiência: Threads não precisam ser criadas e destruídas para cada requisição; elas são reutilizadas.
+Controle: Limita o número de requisições processadas simultaneamente, evitando sobrecarga.
+Escalabilidade: Permite que o servidor lide com muitas conexões, mantendo desempenho estável.
+
+2. Quorum tolerante a falhas em sistemas distribuídos
+O que é um quorum:
+
+Um quorum é um subconjunto de réplicas em um sistema distribuído que deve participar de uma operação (leitura ou escrita) para garantir consistência.
+Quorum tolerante a falhas:
+
+Projetado para funcionar mesmo com até  falhas.
+
+Regras principais:
+𝑁𝑅+𝑁𝑊>𝑁: Para garantir que leituras e escritas sempre acessem réplicas comuns.
+
+𝑁𝑊>𝑁/2 : Para evitar conflitos entre escritores concorrentes.
+
+𝑁𝑅+𝑓≤𝑁 e 𝑁𝑊+𝑓≤ : Para que o sistema continue funcional mesmo com falhas.
+
+Exemplo:
+
+Para 
+𝑁=5 réplicas e 𝑓=1 falha tolerada:
+
+  𝑁𝑅=3 e 𝑁𝑊=3 : Leituras e escritas podem tolerar uma falha sem comprometer a consistência.
+
+
+3. Estratégia compartilhada pela disseminação epidêmica e pelo Chord DHT para eficiência em grande escala
+Disseminação epidêmica:
+
+Inspirada na propagação de doenças.
+Cada nó envia informações a outros nós selecionados aleatoriamente.
+
+Vantagens:
+
+Escalabilidade: Apenas uma fração dos nós é contatada em cada rodada.
+
+Robustez: Mesmo com falhas de nós, a informação se propaga eficientemente.
+
+Chord DHT (Distributed Hash Table):
+
+Estrutura de anel em que cada nó é responsável por uma parte da chave de hash.
+Busca de dados em tempo logarítmico (𝑂(log𝑁)) através de referências entre os nós.
+
+Vantagens:
+
+Escalabilidade: O número de conexões por nó cresce logaritmicamente em relação ao tamanho da rede.
+
+Eficiência: Rápida localização de dados com poucos saltos.
+Estratégia compartilhada:
+
+Localidade limitada: Ambos limitam a comunicação apenas a um subconjunto de nós, seja aleatoriamente (disseminação epidêmica) ou por hash (Chord).
+
+Escalabilidade: Tanto a disseminação epidêmica quanto o Chord funcionam bem em redes grandes porque minimizam a sobrecarga de comunicação e processamento em cada nó.
+Justificativa: Essa abordagem distribui o esforço de forma eficiente, garantindo desempenho estável mesmo em redes massivamente distribuídas.
