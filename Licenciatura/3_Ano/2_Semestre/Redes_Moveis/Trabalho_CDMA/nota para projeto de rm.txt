@@ -1,0 +1,8 @@
+O facto de aumentar o número de utilizadores, significa que a interferência irá aumentar? (pergunta para responder no relatório final?)
+
+Assumindo 2 user(azul 1, vermleho 2) com 2 sinais, onde ambos sofrem uma atenuação de 1, dando origem a uma curva do BER vs SNR 
+Acrescentando +3, repetir a experiência (as curvas devem piorar BER menor)
+
+
+
+
