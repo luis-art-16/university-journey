@@ -1,0 +1,53 @@
+Comandos:
+
+
+wich sleep - procura o programa /sleep
+
+eco $PATH
+
+ls /bin 
+
+
+int execl(const char *path, const char *arg0, ..., NULL); 
+
+     path - caminho completo para o executável
+     arg0 -  nome do executável
+     arg1, …, NULL - argumentos do executável. O último argumento tem de ter o valor NULL
+
+
+para ver o sleep 5:
+
+	int execl("/bin/sleep", "/bin/sleep", "5", NULL);
+
+
+execl -> retorna -1 em caso de erro, caso contrário não retorna nada
+
+
+	- por parâmetros -> int execlp("sleep", "sleep", "5", NULL); ( o p é o path)    
+
+
+	- por vetor (quando não sabemos os argumentos) -> int execvp("sleep", [sleep", "5", NULL]; (v é um vetor)
+
+
+
+echo $? -> ExitStatus de um processo
+
+
+
+man ls - manual ls
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+

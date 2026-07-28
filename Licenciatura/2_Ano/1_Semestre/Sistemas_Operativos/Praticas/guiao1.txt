@@ -1,0 +1,39 @@
+comando para ver os processos que estão a decorrer num ficheiro -> "lsof -p 28810" ( numero do processo, que podemos ver ao fazer o comando "ls"
+
+
+cat - Para imprimir o que está dentro do ficheiro
+
+man lseek - ver documentação da chamada ao sistema
+
+
+
+
+Exercício 2  (Guiao 1)
+
+Passos--
+
+Abrir o ficheiro origem (file.txt)
+Abrir o ficheiro destino(criar se não existir)
+Ler o ficheiro de origem( ler x bytes no origem e escrever x bytes no destino até read == 0 )
+Close (origem)
+Close(destino)
+
+sleep (x seconds) - atrasar um processo
+
+
+adicionar (-i)
+
+Passos
+
+Person p;
+Preeencher dados ( name, age)
+Open ficheiro "people"
+Posicionar no fim (lseek)
+Write
+close
+
+
+fazer o guiao_1 em casa!
+
+
+

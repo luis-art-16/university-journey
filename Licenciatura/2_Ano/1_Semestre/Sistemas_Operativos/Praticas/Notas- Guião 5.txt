@@ -1,0 +1,9 @@
+Notas- Guião 5
+
+                          Files                  Pipes          FIFOS
+
+
+Criar/Abrir               open(… O-CREATE)        pipe(...)       mkfifo + open (garantir que ele existe e depois abrir)
+
+
+Leitura                    read                    read             read
