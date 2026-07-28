@@ -1,0 +1,62 @@
+//Criado por José Novais, copyright.
+
+Criar Matriz Ex:
+A=[5 3 -1 0; 0 6 -2 3; 2 0 4 1; -3 3 -3 5]
+
+Criar Matriz vertical (b) Ex:
+b=[1 2 5 7]'
+
+Calcular a matriz:
+
+x=A\b
+
+Inversa:
+inv(A)
+
+Determinante:
+det(A)
+
+Verificar se é Simétrica:
+A==A'% (Se der a matriz identidade é porque é simetrica)
+
+Verificar se é definida positiva:
+d1=det(A(1,1))
+d2=det(A(1:2,1:2))
+d3=det(A(1:3,1:3))
+d4=det(A)
+
+Calculo da matriz da iteraçao C_GS:
+
+D=diag(diag(A))
+L=tril(-A,-1) (Matriz L, abaixo da diagonal A com sinais trocado -1 desce 1 para baixo -A troca o sinal da matriz A)
+U=triu(-A,1) (Matriz L, acima da diagonal A com sinais trocado 1 sobe 1 para baixo)
+
+C_GS=inv(D-L)*U
+
+Verificar a norma 1:
+norma_1=norm(C_GS,1)
+
+Verificar a norma infinito:
+norma_inf=norm(C_GS,inf)
+
+Funções:
+x6−y3 −0.5)e−x2−y2= 0
+20(x2 −y2) = 5
+//(e=exp)
+//(sin tan cos)
+
+Ex:
+function[f] = Teste(x)
+f(1) = (x(1)^6-x(2)^3-0.5)*exp(-x(1)^2-x(2)^2);
+f(2) = 20*(x(1)^2-x(2)^2)-5;
+end
+
+Só temos de ajustar os valores do tolx e do tolfun:
+op=optimset('display','iter','tolx', 10^-8, 'tolfun',10^-8)
+
+Para obter a solução:
+Temos de ajustar os valores dos intervalos e alterar o nome da função.
+[sol, fsol, exitflag, output] = fsolve('Teste',[1.5 0.5], op)
+
+Exit flag = 1  --> Converge
+Exit flag = 0 ---> Não se conclui

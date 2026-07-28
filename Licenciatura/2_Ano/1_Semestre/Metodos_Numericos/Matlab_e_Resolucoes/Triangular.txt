@@ -1,0 +1,16 @@
+Triangular
+t=0:0.1:15;
+y=1/2-sin(t)/pi;
+ plot(t,y,'g')
+hold on
+y=1/2-sin(2*t)/(2*pi);
+ plot(t,y,'b')
+hold on
+y=1/2-sin(3*t)/(3*pi);
+ plot(t,y,'r')
+hold on
+y=1/2-sin(4*t)/(4*pi);
+ plot(t,y,'g')
+hold on
+y=1/2-sin(t)/pi-sin(2*t)/(2*pi)-sin(3*t)/(3*pi)-sin(4*t)/(4*pi);
+plot(t,y,'b')

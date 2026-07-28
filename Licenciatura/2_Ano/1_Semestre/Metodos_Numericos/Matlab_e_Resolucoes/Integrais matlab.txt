@@ -1,0 +1,31 @@
+x=[0 0.1 0.2 0.3 0.4 0.5 0.6 3.6 6.6 9.6 9.8 10]
+y=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.6 0.6 0.6 0.7 0.8]
+trapz(x,y)
+
+%% resolve 70
+% a)
+x=[0 0.5 1 1.5]
+y=[0 0.35 0.55 0.9]
+trapz(x,y)
+% b)
+integral(@(x)0.5.*x.^2-0.15.*x,1.5,7.5) %Usar .* ./ .*
+quad(@(x)0.5.*x.^2-0.15.*x,1.5,7.5) %Usar .* ./ .*
+quadl(@(x)0.5.*x.^2-0.15.*x,1.5,7.5) %Usar .* ./ .*
+
+%% resolve 71
+I=integral(@(x)sqrt(1+(-exp(-x)).^2),0,1) %Usar .* ./ .*
+%ou
+[I,np]=quad(@(x)sqrt(1+(-exp(-x)).^2),0,1)
+[I1,np1]=quad(@(x)sqrt(1+(-exp(-x)).^2),0,1,1e-16)
+%usando 5 pontos, fazer tabela
+x=0:0.25:1
+y=sqrt(1+(-exp(-x)).^2)
+trapz(x,y)
+
+
+%% resolve 75
+I=integral(@(x)exp(x)./x,1,2)
+
+
+
+
