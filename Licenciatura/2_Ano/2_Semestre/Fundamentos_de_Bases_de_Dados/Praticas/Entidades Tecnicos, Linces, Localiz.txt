@@ -1,0 +1,7 @@
+Entidades: Tecnicos, Linces, Localizações, Controlos,
+
+Tecnicos(n_func, funcionário)
+Linces(id_lince, nome_lince,genero, peso, data_obito, id_pai, id_mae)
+Localizaçóes(id_lince, data_hora, latitude, longitude)
+Controlos(id_controlo, id_lince, data,n_func, peso, estado_saude)
+

@@ -1,0 +1,29 @@
+Estrutura do teste
+8 escolhas multiplas com justificação
+
+Quais as vantagens dos processos?
+Para que serve a normalização?
+Diferença entre um sistema de base de dados e um sistema de ficheiros?
+
+Ver o resto nos slides
+
+
+Parte prática - 3 a 4
+
+1 - Junções
+2 - Count, SUM, Group By
+3 - Subquery ou join
+4 -  
+
+
+O stor disse para responder as perguntas do ultimo teste e SQL!
+
+
+Ficha prática com consulta - fazer grupos de 3 a 4 
+
+Dão nos um texto e temos que aplicar a matéria toda, modelos, criar uma base de dados com dados inventados por nos e responder a perguntas.
+
+
+
+
+

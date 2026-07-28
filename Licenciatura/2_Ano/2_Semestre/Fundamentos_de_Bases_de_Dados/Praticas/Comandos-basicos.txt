@@ -1,0 +1,66 @@
+COMANDOS MYSQL
+
+NET START MYSQL					/* Iniciar o serviço MYSQL */
+
+MYSQL -U ROOT -P				/* Aceder a uma conta MYSQL */
+
+SHOW DATABASES;					/* Mostrar todas as bases de dados */
+
+SOURCE SPORTING.txt;				/* Executar o source SPORTING.txt */
+
+CREATE DATABASE SPORTING;			/* Cria a base de dados SPORTING */
+
+DROP DATABASE IF EXISTS SPORTING;		/* Apaga a base de dados SPORTING */
+
+USE SPORTING;					/* Utilizar a base de dados SPORTING */
+
+CREATE TABLE atletas (				/* Criar a tabela atletas com os seguintes campos */
+n_jogador INT,
+nome CHAR(25),
+);
+
+n_jogador INT NOT NULL,				/* Nao aceita que o campo n_jogador seja nulo na tabela */
+
+N_MODALIDADE int not null auto_increment,	/* Incrementa automáticamente o campo N_MODALIDADE com inteiros */
+
+primary key (n_jogador)				/* Define que o campo n_jogador é a chave primária nesta tabela */
+
+unique (nome)					/* Define que o campo nome vai ser chave secundária nesta tabela e não se vai repetir */
+
+insert into altetas				/* Introduzir valores nas tabelas */
+values (1,'Alberto Acosta','Avancado');
+
+insert into altetas				/* Introduzir valores na tabela nos campos definidos */
+(NOME, POSICAO)
+values ('Alberto Acosta','Avancado');
+
+seniores ENUM('S','N'),				/* Definir que o campo SENIORES só pode assumir os valores 'S' ou 'N' */
+
+CHECK (formacao IN ('S','N'))			/* Verifica se os valores introduzidos no campo FORMACAO sao 'S' ou 'N' */
+
+RENAME TABLE jogadores TO atletas;		/* Altera o nome da tabela JOGADORES para ATLETAS */
+
+DROP TABLE IF EXISTS atleta;			/* Apaga a tabela atletas */
+
+SHOW TABLES;					/* Mostra as tabelas */
+
+DESC jogadores;					/* Mostra as caracteristicas ca tabela jogadores */
+
+SELECT <colunas>				/* Interrogação da base de dados */
+FROM <tabelas>
+WHERE <condições>
+
+SELECT DISTINCT <colunas>			/* Interrogação da base de dados excluindo valores repetidos */
+FROM <tabelas>
+WHERE <condições>
+
+SELECT nome					/* Ordenar por ordem decrescente (DESC) ou ascendente (ASC) de saldo */
+FROM atletas
+ORDER BY nome ASC
+
+SELECT COUNT(*)					/* Contar o número de atletas existentes na tabela */
+FROM atletas
+
+tee resp.txt;					/* Passa a apresentar o resultado num ficheiro resp */
+
+notee resp.txt;					/* Para de enviar os documentos para o ficheiro definido */
