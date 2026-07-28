@@ -1,0 +1,103 @@
+// Definir pinos para o sensor ultrassônico
+const int trigPin = 22;   // Pino de trigger do sensor ultrassônico no Mega
+const int echoPin = 23;   // Pino de echo do sensor ultrassônico no Mega
+
+// Definir pinos para o controle dos motores
+const int motor1Pin1 = 3;  // Pino PWM para o motor 1
+const int motor1Pin2 = 4;
+const int motor2Pin1 = 5;  // Pino PWM para o motor 2
+const int motor2Pin2 = 6;
+
+// Variáveis para o sensor ultrassônico
+long duration;
+int distance;
+
+// Variáveis do filtro de Kalman
+float Q = 0.1;  // Variância do processo
+float R = 1;    // Variância da medição
+float P = 1, K = 0;
+float X_est = 0;  // Estado estimado
+
+void setup() {
+  // Configurar pinos do sensor ultrassônico
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+
+  // Configurar pinos dos motores
+  pinMode(motor1Pin1, OUTPUT);
+  pinMode(motor1Pin2, OUTPUT);
+  pinMode(motor2Pin1, OUTPUT);
+  pinMode(motor2Pin2, OUTPUT);
+
+  // Iniciar comunicação serial para monitorar as leituras
+  Serial.begin(9600);
+}
+
+// Função para aplicar o filtro de Kalman
+float kalmanFilter(float medida) {
+  // Previsão
+  P = P + Q;
+  
+  // Atualização
+  K = P / (P + R);
+  X_est = X_est + K * (medida - X_est);
+  P = (1 - K) * P;
+
+  return X_est;
+}
+
+// Função para mover o robô para frente
+void moverFrente() {
+  digitalWrite(motor1Pin1, HIGH);
+  digitalWrite(motor1Pin2, LOW);
+  digitalWrite(motor2Pin1, HIGH);
+  digitalWrite(motor2Pin2, LOW);
+}
+
+// Função para desviar o robô (por exemplo, girar à direita)
+void desviarObstaculo() {
+  // Parar o robô
+  digitalWrite(motor1Pin1, LOW);
+  digitalWrite(motor1Pin2, LOW);
+  digitalWrite(motor2Pin1, LOW);
+  digitalWrite(motor2Pin2, LOW);
+  delay(500);
+
+  // Girar à direita por um tempo
+  digitalWrite(motor1Pin1, HIGH);
+  digitalWrite(motor1Pin2, LOW);
+  digitalWrite(motor2Pin1, LOW);
+  digitalWrite(motor2Pin2, HIGH);
+  delay(500);  // Tempo de giro ajustável
+}
+
+void loop() {
+  // Enviar um pulso ultrassônico
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Medir o tempo de retorno do pulso
+  duration = pulseIn(echoPin, HIGH);
+  
+  // Calcular a distância em centímetros
+  distance = duration * 0.034 / 2;
+
+  // Aplicar o filtro de Kalman à leitura da distância
+  float distancia_filtrada = kalmanFilter(distance);
+
+  // Imprimir a distância filtrada no monitor serial
+  Serial.print("Distância Filtrada: ");
+  Serial.println(distancia_filtrada);
+
+  // Controle do robô com base na distância filtrada
+  if (distancia_filtrada < 20) {
+    desviarObstaculo();  // Desviar se a distância for menor que 20 cm
+  } else {
+    moverFrente();  // Continuar em frente se não houver obstáculo
+  }
+
+  delay(500);  // Pausa para evitar leituras excessivas
+}

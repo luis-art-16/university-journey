@@ -1,0 +1,196 @@
+  int trigPinMiddle = A15;      // Trig pin of middle HC-SR04
+  int echoPinMiddle = A14;      // Echo pin of middle HC-SR04
+  int trigPinLeft = A13;        // Trig pin of left HC-SR04
+  int echoPinLeft = A12;        // Echo pin of left HC-SR04
+  int trigPinRight = A11;       // Trig pin of right HC-SR04
+  int echoPinRight = A10;       // Echo pin of right HC-SR04
+
+  int revleft4 = 4;       // Reverse motion of left motor
+  int fwdleft5 = 3;       // Forward motion of left motor
+  int controlLeftMotorSpeed = 2; // Speed control for left motor
+
+  int revright6 = 7;      // Reverse motion of right motor
+  int fwdright7 = 6;      // Forward motion of right motor
+  int controlRightMotorSpeed = 8; // Speed control for right motor
+
+  long distanceMiddle, distanceLeft, distanceRight;
+  int baseSpeed = 155; // Base speed (PWM value, range: 0-255)
+
+  // Kalman filter variables for each sensor
+  float xMiddle = 0.0;
+  float xLeft = 0.0;
+  float xRight = 0.0;
+  float velocity = 36.76; 
+
+  float P[2][2] = {{200.0, 0}, {0, 50.0}}; //Current state estimate
+  float Q[2][2] = {{3, 0}, {0, 1.0}}; //System internal model
+  float R = 2; // Measurement noise covariance
+  float dt = 0.1; // Time step
+
+  float filteredDistanceMiddle = 0.0;
+  float filteredDistanceLeft = 0.0;
+  float filteredDistanceRight = 0.0;
+
+  void setup() {
+    delay(random(500, 2000)); // Delay for random time
+    Serial.begin(9600);
+
+    // Motor pins as output
+    pinMode(revleft4, OUTPUT);
+    pinMode(fwdleft5, OUTPUT);
+    pinMode(controlLeftMotorSpeed, OUTPUT);
+
+    pinMode(revright6, OUTPUT);
+    pinMode(fwdright7, OUTPUT);
+    pinMode(controlRightMotorSpeed, OUTPUT);
+
+    // Ultrasonic sensor pins
+    pinMode(trigPinMiddle, OUTPUT);
+    pinMode(echoPinMiddle, INPUT);
+    pinMode(trigPinLeft, OUTPUT);
+    pinMode(echoPinLeft, INPUT);
+    pinMode(trigPinRight, OUTPUT);
+    pinMode(echoPinRight, INPUT);
+  }
+
+  void updateEKF(float z, float &x, float &v, float &filteredDistance) {
+    // Prediction step
+    float x_pred = x + v * dt;
+    float P_pred[2][2];
+    P_pred[0][0] = P[0][0] + Q[0][0];
+    P_pred[1][1] = P[1][1] + Q[1][1];
+
+    // Update step
+    float y = z - x_pred; // Residual
+    float S = P_pred[0][0] + R; // Residual covariance
+    float K[2]; // Kalman gain
+    K[0] = P_pred[0][0] / S;
+    K[1] = P_pred[1][0] / S;
+
+    // Update state
+    x = x_pred + K[0] * y;
+    v = v; // Velocity remains constant for now
+
+    // Update covariance
+    P[0][0] = (1 - K[0]) * P_pred[0][0];
+    P[1][1] = P_pred[1][1];
+
+    filteredDistance = x; // Save filtered distance
+  }
+
+  long getDistance(int trigPin, int echoPin) {
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH); // Send pulse
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+
+    long duration = pulseIn(echoPin, HIGH); // Measure pulse duration
+    return duration / 58.2; // Convert to distance in cm
+  }
+
+  void moveForward() {
+    digitalWrite(fwdright7, HIGH);
+    digitalWrite(revright6, LOW);
+    digitalWrite(fwdleft5, HIGH);
+    digitalWrite(revleft4, LOW);
+
+    // Set speed
+    analogWrite(controlRightMotorSpeed, baseSpeed);
+    analogWrite(controlLeftMotorSpeed, baseSpeed);
+  }
+
+  void stopMotors() {
+    digitalWrite(fwdright7, LOW);
+    digitalWrite(revright6, LOW);
+    digitalWrite(fwdleft5, LOW);
+    digitalWrite(revleft4, LOW);
+
+    // Set speed to 0
+    analogWrite(controlRightMotorSpeed, 0);
+    analogWrite(controlLeftMotorSpeed, 0);
+  }
+
+  void moveBackward() {
+    digitalWrite(fwdright7, LOW);
+    digitalWrite(revright6, HIGH);
+    digitalWrite(fwdleft5, LOW);
+    digitalWrite(revleft4, HIGH);
+
+    // Set speed
+    analogWrite(controlRightMotorSpeed, baseSpeed);
+    analogWrite(controlLeftMotorSpeed, baseSpeed);
+  }
+
+  void turnLeft() {
+    digitalWrite(fwdright7, HIGH); // Right motor forward
+    digitalWrite(revright6, LOW);
+    digitalWrite(fwdleft5, LOW);  // Left motor stops
+    digitalWrite(revleft4, LOW);
+
+    // Adjust speed for a turn
+    analogWrite(controlRightMotorSpeed, baseSpeed);
+    analogWrite(controlLeftMotorSpeed, 0);
+  }
+
+  void turnRight() {
+    digitalWrite(fwdright7, LOW);  // Right motor stops
+    digitalWrite(revright6, LOW);
+    digitalWrite(fwdleft5, HIGH); // Left motor forward
+    digitalWrite(revleft4, LOW);
+
+    // Adjust speed for a turn
+    analogWrite(controlRightMotorSpeed, 0);
+    analogWrite(controlLeftMotorSpeed, baseSpeed);
+  }
+
+  void loop() {
+
+    // Measure distances
+    distanceMiddle = getDistance(trigPinMiddle, echoPinMiddle);
+    distanceLeft = getDistance(trigPinLeft, echoPinLeft);
+    distanceRight = getDistance(trigPinRight, echoPinRight);
+
+    // Update Kalman filter for each sensor
+    updateEKF(distanceLeft, xLeft, velocity, filteredDistanceLeft);
+    updateEKF(distanceMiddle, xMiddle, velocity, filteredDistanceMiddle);
+    updateEKF(distanceRight, xRight, velocity, filteredDistanceRight);
+
+    // Print results
+    Serial.print("Left Distance: ");
+    Serial.print(filteredDistanceLeft);
+    Serial.print(" cm, Middle Distance: ");
+    Serial.print(filteredDistanceMiddle);
+    Serial.print(" cm, Right Distance: ");
+    Serial.print(filteredDistanceRight);
+    Serial.println(" cm");
+
+    // Obstacle avoidance logic
+    if (filteredDistanceMiddle > 30 && filteredDistanceLeft > 30 && filteredDistanceRight > 30) {
+      // No obstacles in any direction
+      moveForward();
+    } else {
+      stopMotors(); // Stop before deciding action
+      delay(200);
+
+      if (filteredDistanceMiddle <= 30) {
+        // Obstacle directly ahead
+        if (filteredDistanceLeft > filteredDistanceRight) {
+          turnLeft(); // Turn left if left side is clearer
+        } else {
+          turnRight(); // Turn right if right side is clearer
+        }
+      } else if (filteredDistanceLeft <= 30) {
+        // Obstacle on the left
+        turnRight(); // Turn away from the obstacle
+      } else if (filteredDistanceRight <= 30) {
+        // Obstacle on the right
+        turnLeft(); // Turn away from the obstacle
+      }
+
+      delay(500); // Allow time for turn
+      stopMotors();
+    }
+
+    delay(100); // Small delay for stability
+  }
