@@ -1,0 +1,77 @@
+Quais são as vantagens dos Processos: Maior eficiência (Execuções mais rápidas), modularidade(Maior flexibilidade), segurança e manutenabilidade(Facilidade de modificação) do código em bancos de dados.
+
+Para que serve a Normalização: Maior integridade (minimização de anomalias), eficiência(Menor tempo de acesso) e flexibilidade no armazenamento e controlo de dados.
+
+Diferença entre SGBD e Sistema de ficheiros?
+
+ - > SGBD: Ideal para gerenciar grandes volumes de dados estruturados, com foco em acesso rápido, consultas complexas, transações e segurança robusta.
+
+ - > Sistemas de ficheiros: Adequado para armazenar e recuperar grandes volumes de dados não estruturados, priorizando simplicidade, eficiência de armazenamento e compatibilidade com diversos sistemas.
+
+Base de Dados (BD)
+
+Definição: Conjunto organizado de dados estruturados, acessível a todos os usuários ou processos da organização que necessitem.
+
+Objetivos:
+Fornecer uma forma natural de pensar sistemas de informação.
+Disponibilizar ferramentas para desenvolvimento rápido e eficiente de novos sistemas e facilitar a manutenção dos existentes.
+
+Dados vs Informação:
+
+Dados: Elementos ou valores discretos sem valor individual.
+
+Informação: Resultado do processamento de dados.
+
+Modelo de Dados:
+
+Representação abstrata da estrutura lógica dos dados que atendem aos requisitos do Sistema de Informação (SI).
+Pode ser hierárquico, em rede, relacional, orientado a objetos, etc.
+
+Sistema de Gestão de Bases de Dados (SGBD):
+
+Software que gerencia armazenamento e manipulação de dados, servindo de interface entre a BD e o nível aplicacional.
+Responsável por:
+Compartilhamento.
+Segurança.
+Recuperação de dados.
+Abstração do armazenamento físico.
+Fornecimento de um nível de abstração alto para o nível aplicacional.
+
+Arquitetura ANSI/SPARC:
+
+Padrão para desenvolvimento de tecnologias de BD.
+Níveis:
+Interno: Foco em otimizar o desempenho.
+Conceitual: Representação da estrutura de dados independente de usuários ou aplicações.
+Externo: Define a visão de cada usuário ou aplicação sobre os dados.
+
+Características:
+Independência física: Alterações no interno não afetam o conceitual.
+Independência lógica: Alterações no conceitual geralmente não afetam o externo.
+Independência programas/dados: Alterações na estrutura de dados não exigem alterações no nível aplicacional.
+
+
+
+Structured Query Language
+
+QBE – inspirada no Cálculo Relacional de domínios
+
+QUEL – inspirada no Cálculo Relacional de tuplos
+
+Xbase - Muito divulgadas na área das desktop databases
+
+Linguagem SQL
+    . Considerada o standard em termos de linguagens relacionais
+    . Sujeita a normalização (SQL-86/89, SQL2, SQL3, …) 
+
+    . A SQL como:
+	- Linguagem de manipulação de dados (LMD)
+	    . Interrogação de bases de dados 
+	    . Actualização de bases de dados  
+
+	-  Linguagem de definição de dados (LDD)
+
+
+
+
+

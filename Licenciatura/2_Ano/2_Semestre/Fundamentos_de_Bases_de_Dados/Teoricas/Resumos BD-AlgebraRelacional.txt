@@ -1,0 +1,127 @@
+		Álgebra Relacional
+
+Interfaces ao modelo relacional :
+- Álgebra Relacional 
+- Cálculo Relacional 
+Álgebra Relacional:
+
+		 _		       _
+		| . União		|
+		| . Intersecção		 > Operadores sobre Conjuntos
+		| . Diferença		|
+Operadores      | . Produto Cartesiano _|
+Relacionais    <  . Selecção	        |
+		| . Projecção		|
+		| . Junção		 > Operadores adicionais
+		| . Divisão		|
+		|_		       _|
+
+União:			relação3 = (relação1 U relação2)
+
+_____________     _____________     _____________
+| A | B | C |  U  | A | B | C |  =  | A | B | C |
+|___|___|___|     |___|___|___|     |___|___|___|
+|a1 |b2 |c1 |     |a2 |b3 |c2 |     |a1 |b2 |c1 |
+|a5 |b1 |c2 |     |a1 |b2 |c1 |     |a5 |b1 |c2 |
+|a2 |b4 |c4 |     |a2 |b4 |c4 |     |a2 |b4 |c4 |
+|a3 |b3 |c3 |     |___|___|___|     |a3 |b3 |c3 |
+|___|___|___|                       |a2 |b3 |c2 |
+				    |___|___|___|
+
+
+Intersecção:		relação3 = (relação1 /\ relação2)
+
+_____________     _____________     _____________
+| A | B | C | /\  | A | B | C |  =  | A | B | C |
+|___|___|___|     |___|___|___|     |___|___|___|
+|a1 |b2 |c1 |     |a2 |b3 |c2 |     |a1 |b2 |c1 |
+|a5 |b1 |c2 |     |a1 |b2 |c1 |     |a2 |b4 |c4 |
+|a2 |b4 |c4 |     |a2 |b4 |c4 |     |___|___|___|
+|___|___|___|     |___|___|___|
+
+
+Diferença:		relação3 = (relação1 - relação2)
+
+_____________     _____________     _____________
+| A | B | C |  -  | A | B | C |  =  | A | B | C |
+|___|___|___|     |___|___|___|     |___|___|___|
+|a1 |b2 |c1 |     |a2 |b3 |c2 |     |a5 |b1 |c2 |
+|a5 |b1 |c2 |     |a1 |b2 |c1 |     |___|___|___|
+|a2 |b4 |c4 |     |a2 |b4 |c4 |     
+|___|___|___|     |___|___|___|
+
+
+Produto Cartesiano:	relação3 = (relação1 X relação2)
+
+_________     _________     _________________
+| A | B |  X  | c | D |  =  | A | B | C | D |
+|___|___|     |___|___|     |___|___|___|___|
+|a1 |b2 |     |c2 |d3 |     |a1 |b2 |c2 |d3 |
+|a5 |b1 |     |c1 |d2 |     |a1 |b2 |c1 |d2 |
+|a2 |b4 |     |___|___|     |a5 |b1 |c2 |d3 |
+|___|___|       	    |a5 |b1 |c1 |d2 |
+            	            |a2 |b4 |c2 |d3 |
+            	            |a2 |b4 |c1 |d2 |
+			    |___|___|___|___|
+
+				   _
+Selecção:		relação2 = b <condição> (relação1)
+_
+b (A = a2)
+_____________     _____________
+| A | B | C |  =  | A | B | C |
+|___|___|___|     |___|___|___|
+|a2 |b3 |c2 |     |a2 |b3 |c2 |
+|a1 |b2 |c1 |     |a2 |b4 |c4 |
+|a2 |b4 |c4 |     |___|___|___|
+|___|___|___|
+
+				   __
+Projecção:		relação2 = || <lista_atributos> (relação1)
+
+__
+|| (A, C)
+_____________     _________
+| A | B | C |  =  | A | C |
+|___|___|___|     |___|___|
+|a2 |b3 |c4 |     |a2 |c4 |
+|a1 |b2 |c1 |     |a1 |c1 |
+|a2 |b4 |c4 |     |___|___|
+|___|___|___|
+
+
+Junção:			relação3 = (relação1 oo relação2)
+
+_____________     _________     _________________
+| A | B | C | oo  | c | D |  =  | A | B | C | D |
+|___|___|___|     |___|___|     |___|___|___|___|
+|a1 |b2 |c1 |     |c2 |d3 |     |a1 |b2 |c1 |d2 |
+|a5 |b1 |c2 |     |c1 |d2 |     |a5 |b1 |c2 |d3 |
+|a2 |b4 |c4 |     |c2 |d1 |     |a5 |b1 |c2 |d1 |
+|___|___|___|     |___|___|     |___|___|___|___|
+
+
+Divisão:		relação3 = (relação1 : relação2)
+
+_________________     _________     _________
+| A | B | C | D |  :  | c | D |  =  | A | B |
+|___|___|___|___|     |___|___|     |___|___|
+|a1 |b2 |c2 |d3 |     |c2 |d3 |     |a1 |b2 |
+|a5 |b1 |c1 |d2 |     |c1 |d2 |     |a2 |b4 |
+|a2 |b4 |c1 |d2 |     |___|___|     |___|___|
+|a3 |b5 |c4 |d4 |
+|a2 |b4 |c2 |d3 |
+|a1 |b2 |c1 |d2 |
+|___|___|___|___|
+
+
+
+Cálculo Relacional:
+
+- Cálculo relacional de tuplos
+- Cálculo relacional de domínios
+- Mais alto-nível (questões são colocadas de forma declarativa!)
+- Quantificadores
+   . Quantificador existencial (E) “existe pelo menos um …”
+   . Quantificador universal (A) “para todo …”
+

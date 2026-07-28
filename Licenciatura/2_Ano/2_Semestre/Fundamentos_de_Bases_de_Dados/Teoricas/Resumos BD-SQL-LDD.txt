@@ -1,0 +1,261 @@
+		     Structured Query Language
+		LDD – Linguagem de Definição de Dados
+
+- Núcleo de qualquer BD -> Dicionário de Dados (DD)
+- Sistemas Relacionais -> DD armazenado em tabelas
+- Instrução base:
+    . Criação de Tabelas: 
+	- Atributos e respectivos domínios (INTEGER, CHAR, DECIMAL, …)
+	- Restrições de integridade
+
+Criação de tabelas:
+	CREATE TABLE <nome_tabela> (
+		< definição de colunas e
+		restrições de integridade >
+		) 
+
+Quais os atributos/campos da tabela?
+Quais os seus domínios (INTEGER, DECIMAL, CHAR, …) ? 
+Quais as restrições de integridade? 
+
+Exemplos:
+	NOT NULL 
+	 custo	DECIMAL(5,2) NOT NULL 
+
+A SQL como linguagem de definição de dados (cont.)
+- PRIMARY  KEY
+	cod_produto	CHAR(6) PRIMARY KEY
+
+    Ou,
+	num_factura	CHAR(5),
+	cod_produto	CHAR(6),
+	PRIMARY KEY (num_factura, cod_produto)
+
+- UNIQUE
+	cod_fornecedor	CHAR(4) PRIMARY KEY,
+	nome_fornecedor	CHAR(20) NOT NULL,
+	UNIQUE (nome_fornecedor)
+
+- CHECK
+	peso			INTEGER,
+	classificacao		SMALLINT,
+	genero			CHAR(1),
+	CHECK (peso > 50),
+	CHECK (classificacao BETWEEN 0 AND 20),
+	CHECK (genero IN ('F','M')) 
+
+Restrições de integridade referencial
+
+Modificação de cod_dep na tabela Departamentos ????
+Remoção do dep. Informática na tabela Departamentos ????
+
+CREATE TABLE Funcionarios (
+	...
+	cod_dep	CHAR(3),
+	FOREIGN KEY (cod_dep)
+	REFERENCES Departamentos (cod_dep)
+	ON UPDATE CASCADE
+	ON DELETE SET NULL ),
+	...
+
+Exemplo de esquema relacional considerando:
+
+	Clientes (cod_cliente, cliente, profissao, localidade)
+	Agencias (cod_agencia, agencia, localidade)
+	Contas (num_conta, tipo_conta, cod_cliente, cod_agencia, saldo)
+	Emprestimos (num_emprestimo, cod_cliente, cod_agencia, valor)
+
+Restrições
+    . Só existem contas Ordem e Prazo
+    . O saldo de qualquer conta tem de ser sempre igual ou superior a 10.000
+    . Os empréstimos têm de ser >=100.000 e <=10.000.000
+
+O esquema poderia ser definido em SQL:
+
+CREATE TABLE Contas (
+	num_conta		CHAR(10),
+	tipo_conta		CHAR(5),
+	cod_agencia		CHAR(3),
+	cod_cliente		CHAR(4) NOT NULL,
+	saldo			DECIMAL(10,2) NOT NULL,
+	CONSTRAINT tipos_de_contas
+	   CHECK (tipo_conta IN ('ordem','prazo')),
+	CONSTRAINT valor_saldo CHECK (saldo >= 10000),
+	CONSTRAINT ch_prim_Contas
+	   PRIMARY KEY (num_conta),
+	CONSTRAINT ch_estr_Agencias_Contas
+	   FOREIGN KEY (cod_agencia)
+	   REFERENCES Agencias (cod_agencia)
+	   ON UPDATE CASCADE
+	   ON DELETE SET NULL,		<============
+	CONSTRAINT ch_estr_Clientes_Contas
+	   FOREIGN KEY (cod_cliente)
+	   REFERENCES Clientes (cod_cliente)
+	   ON UPDATE CASCADE
+	   ON DELETE CASCADE		<============
+	) 
+
+CREATE TABLE Emprestimos (
+	num_emprestimo		CHAR(5),
+	cod_agencia		CHAR(3),
+	cod_cliente		CHAR(4) NOT NULL,
+	valor			INTEGER NOT NULL,
+	CONSTRAINT valor_emprestimo
+	   CHECK (valor BETWEEN 100000 AND 100000000),
+	CONSTRAINT ch_prim_Emprestimos
+	   PRIMARY KEY (num_emprestimo),
+	CONSTRAINT ch_estr_Agencias_Emprestimos
+	   FOREIGN KEY (cod_agencia)
+	   REFERENCES Agencias (cod_agencia)
+	   ON UPDATE CASCADE
+	   ON DELETE SET NULL,		<==============
+	CONSTRAINT ch_estr_Clientes_Emprestimos
+	   FOREIGN KEY (cod_cliente)
+	   REFERENCES Clientes (cod_cliente)
+	   ON UPDATE CASCADE
+	   ON DELETE CASCADE		<==============
+	) 
+
+CREATE TABLE Agencias (
+	cod_agencia	CHAR(3),
+	agencia		VARCHAR(20) NOT NULL,
+	localidade	VARCHAR(10) NOT NULL,
+	CONSTRAINT ch_candidata_Agencias
+	   UNIQUE (agencia),
+	CONSTRAINT ch_prim_Agencias
+	   PRIMARY KEY (cod_agencia)
+	)
+
+CREATE TABLE Clientes (
+	cod_cliente	CHAR(4),
+	cliente		VARCHAR(30) NOT NULL,
+	profissao	VARCHAR(10),
+	localidade	VARCHAR(10) NOT NULL,
+	CONSTRAINT ch_prim_Clientes
+	   PRIMARY KEY (cod_cliente)
+	)
+
+Alteração da estrutura das tabelas:
+	ALTER TABLE Clientes
+	   ADD COLUMN nacionalidade VARCHAR(15)
+              	DEFAULT 'portuguesa'
+
+	ALTER TABLE Clientes
+	   MODIFY COLUMN nacionalidade VARCHAR(25)
+
+	ALTER TABLE Clientes
+	   DROP COLUMN nacionalidade
+
+Remoção de tabelas:
+
+	DROP TABLE Clientes 
+
+
+Tabelas virtuais (views)
+	CREATE VIEW <view> [(<colunas>)]
+	   AS <questão>
+	   [WITH CHECK OPTION]
+
+Exemplo
+	CREATE VIEW Grandes_Contas 
+	   AS (SELECT *
+		FROM Contas
+		WHERE saldo > 100000000)
+
+(View que pode ser utilizada como se de uma tabela se tratasse.)
+
+Clientes cujas contas têm saldos superiores ao saldo médio das contas do banco:
+
+	
+   CREATE VIEW Super_Clientes (cod_cliente, cliente)
+     AS (SELECT Cl.cod_cliente, Cl.cliente
+         FROM Clientes Cl
+         WHERE (SELECT AVG (saldo)
+                FROM Contas)
+              < ALL
+               (SELECT Saldo
+                FROM Contas Co
+                WHERE Co.cod_cliente = Cl.cod_cliente)) 
+
+As views são muito utilizadas na simplificação de questões
+Exemplo
+	“quais os clientes, com empréstimos contraídos neste banco, cujas contas têm saldos superiores à media (super clientes) ?” 
+
+	SELECT *
+	FROM Super_Clientes
+	WHERE cod_cliente IN (SELECT cod_cliente
+                      	  FROM Emprestimos)  
+
+	Remoção da view
+	DROP VIEW Super_Clientes
+
+Actualização de views
+    . Nem todas as views são actualizáveis...
+    . As que forem, podem evitar actualizações fora do seu âmbito
+	Exemplo
+	CREATE VIEW Grandes_Contas
+     	    AS (SELECT *
+         	    FROM Contas
+         	    WHERE saldo > 100000000)
+     	    WITH CHECK OPTION 
+
+Restrições do tipo assertion
+    . Não ficam “presas” a qualquer tabela
+    . Úteis para especificar restrições sobre várias tabelas
+    . Exemplo: “O saldo total das contas de cada cliente (caso possua alguma!) não pode ser superior ao valor de qualquer empréstimo contraído por esse cliente”
+
+ALTER TABLE Emprestimos
+		ADD CONSTRAINT Emprestimos_Contas
+		CHECK ((SELECT SUM(C.saldo)
+	            FROM Contas C
+	            WHERE C.cod_cliente = cod_cliente)
+	           <
+	           (SELECT MIN(E.valor)
+	            FROM Emprestimos E
+	            WHERE E.cod_cliente = cod_cliente))
+
+- Esta restrição associada apenas à tabela “Emprestimos” não garante a integridade da base de dados. O mesmo acontece se for associada apenas à tabela “Contas” 
+- Solução: adicionar a mesma restrição às duas tabelas…
+- Ou, criar uma assertion: 
+
+    CREATE ASSERTION Condicoes_de_emprestimo
+	CHECK (NOT EXISTS (
+           SELECT *
+           FROM Clientes Cl
+           WHERE (SELECT SUM(C.saldo)
+                  FROM Contas C
+                  WHERE C.cod_cliente = Cl.cod_cliente)
+                  >
+                 (SELECT MIN(E.valor)
+                  FROM Emprestimos E
+                  WHERE E.cod_cliente = Cl.cod_cliente)
+	   )) 
+
+Triggers
+    . Permite libertar o nível aplicacional de tarefas rotineiras 
+    . Manutenção da integridade (desnormalização, dados replicados, etc.) 
+    . Suporte de regras de negócio
+
+	Por exemplo: Relativamente ao esquema anterior considerar que “quando um cliente contrai um empréstimo, o banco oferece sempre 1% do valor desse empréstimo, a creditar em cada uma das suas contas, desde que esse cliente possua mais de três contas no banco ”
+
+		Como implementar esta regra de negócio?
+
+Utilizando, a linguagem PL/SQL da família de SGBDs Oracle, o trigger anterior poderia ser escrito: 
+
+	CREATE TRIGGER Bonus
+	AFTER INSERT ON Emprestimos
+	FOR EACH ROW
+	DECLARE
+	   num_contas	  SMALLINT;
+	BEGIN
+			SELECT COUNT(*)
+			INTO num_contas
+			FROM Contas
+			WHERE cod_cliente = :NEW.cod_cliente;
+			IF (num_contas > 3) THEN
+				UPDATE Contas
+				SET saldo= saldo + 0.01 * :NEW.valor
+				WHERE cod_cliente= :NEW.cod_cliente;
+			END IF ;
+	END Bonus ; 
+

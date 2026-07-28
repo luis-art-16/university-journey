@@ -1,0 +1,120 @@
+O que é uma Base de Dados?
+
+Uma Base de Dados é um conjunto organizado de dados, disponível a todos os utilizadores ou processamentos da organização que deles tenham necessidade.
+
+Tecnologia de Bases de Dados:
+
+Principais Vantagens 
+ Integração dos recursos informacionais da organização 
+ Desenvolvimento e manutenção mais alto-nível 
+
+Contudo, há dificuldades nessa transição:
+ Investimentos realizados ... 
+ Justificar a mudança nem sempre é fácil ... 
+ Dificuldades técnicas ... 
+ As organizações “antigas” são as mais afectadas! 
+
+Características fundamentais da informação 
+ Actualidade (período de validade da informação);
+ Correcção (rigor da informação);
+ Relevância (o excesso de informação dificulta a tomada de decisão);
+ Disponibilidade (estar disponível no momento em que é necessária);
+ Legibilidade (forma como é disponibilizada). 
+
+SGBD – implementa um interface lógico entre dados e aplicações
+
+Os metadados são armazenados na base de dados:
+		-> Dicionário de Dados / Catálogo 
+
+Grandes consequências da adopção da Tecnologia de Bases de Dados:
+
+- Perspectiva integrada dos dados organizacionais
+- Maior produtividade no desenvolvimento/manutenção de sistemas
+- Ênfase na definição do modelo de dados do sistema
+
+Modelação de Dados:
+
+- A adopção da tecnologia de bases de dados requer a modelação de dados, porque várias aplicações partilham o mesmo conjunto de dados.
+- A base de dados serve as aplicações já existentes, mas deve estar preparada para servir as aplicações que venham a ser desenvolvidas no futuro.
+- A identificação dos dados necessários passa a depender dos requisitos de informação do Sistema de Informação (SI) que a base de dados pretende suportar (e não exclusivamente das necessidades de processamento de cada aplicação).
+
+A modelação de dados, vista como o conjunto de actividades que conduz ao desenho da BD, passa por três etapas:
+
+- Desenho conceptual: consiste na construção do modelo conceptual de dados, o qual reflecte a percepção que os utilizadores têm dos dados, sendo independente de qualquer implementação física. A abordagem mais utilizada são os diagramas E-R (Entidades e Relacionamentos).
+- Desenho lógico: Corresponde à transformação do modelo conceptual em estruturas de dados que são implementáveis no SGBD seleccionado. O modelo relacional tem sido o modelo mais utilizado na construção de modelos lógicos de dados.
+- Desenho físico: Passa pela definição dos detalhes físicos que serão considerados na implementação do modelo lógico, e que são específicos do SGBD seleccionado.
+
+Diagramas E-R:
+
+Os diagramas E-R são utilizados para descrever a estrutura dos dados específica de uma dada aplicação ou SI. Os componentes básicos utilizados na modelação são a entidade, o relacionamento e o atributo:
+
+- Entidades constituem objectos ou conceitos de interesse no domínio de aplicação em causa. 
+- Relacionamentos representam associações entre entidades. 
+- Os atributos de uma entidade ou relação definem propriedades, assumindo valores dentro do contexto definido para o domínio de aplicação modelado.
+
+Modelo Relacional:
+
+- Um tipo de Bases de Dados.
+- A estrutura de dados utilizada no modelo de dados é a relação, podendo ser definida como uma tabela constituída por linhas e colunas, na qual as colunas representam os atributos ou campos e as linhas os registos ou instâncias da relação.
+- Para cada atributo define-se o domínio de valores que o mesmo pode tomar.
+- O modelo relacional permite a manipulação dos dados através da álgebra e cálculo relacional.
+
+Modelo Relacional:
+
+- O valor de cada atributo num registo é atómico.
+- Os atributos de uma relação devem ter identificadores distintos.
+- Os registos de uma relação devem ser distintos.
+- A ordem dos registos, assim como a ordem dos atributos, é indiferente.
+- Valores desconhecidos - null.
+- Chave da relação.
+
+- Relação
+- Atributos
+- Registo, Instância ou Tuplo
+- Grau da Relação
+- Cardinalidade da relação
+
+Tabelas ou relações:
+- Relações base que integram o esquema da BD;
+- Relações virtuais ou views que proporcionam vistas parciais sobre o esquema da BD.
+
+Chaves:
+- Superchave;
+- Chave candidata;
+- Chave primária ou chave principal;
+- Chave estrangeira.
+
+Restrições de integridade:
+- Integridade de domínio;
+- Integridade da entidade;
+- Integridade referencial.
+
+Modelação:
+
+Modelar os dados de um sistema seguindo o modelo relacional consiste na execução dos seguintes passos:
+1. Detecção das entidades relevantes;
+2. Elaboração do diagrama E-R;
+3. Levantamento da informação associada a cada entidade;
+4. Desenho do esquema das relações.
+
+Entidades:
+
+Objectos do Sistema de Informação sobre os quais se pretende armazenar, tratar e exibir informação. É o primeiro passo da modelação, sobre o qual todas as fases incidirão.
+
+Diagramas E-R:
+
+- O diagrama entidades-relacionamentos utiliza uma convenção gráfica que tem como intuito apresentar rápida e claramente as entidades envolvidas e como é que as mesmas se relacionam entre si.
+- Num Diagrama E-R as entidades são representadas por rectângulos e os relacionamentos por linhas entre esses rectângulos. Nos rectângulos colocam-se os nomes das diferentes entidades. As linhas apresentam setas que definem o sentido da relação e cuja forma caracteriza o tipo de relacionamento existente entre duas entidades.
+
+Atributos:
+
+Os atributos ou campos de dados constituem a informação relevante, ou a informação com que se pretende lidar, de uma determinada entidade. Os atributos caracterizam as entidades. 
+- atributos simples: informação “normal”;
+- atributos chave: para distinção das instâncias.
+
+Esquema Relacional:
+
+A partir dos atributos anteriormente detectados é possível elaborar as tabelas de cada entidade. Em primeiro lugar é necessário detectar informação redundante e construir tabelas auxiliares que minimizem essa redundância. Em regra, para cada relação de muitos para muitos cria-se uma nova relação cujos atributos serão os atributos chave das respectivas entidades relacionadas.
+
+Continuando com o exemplo apresentado, verifica-se que as relações Aluno e Disciplina possuem um relacionamento de muitos para muitos, do qual resultará uma nova Tabela Notas com os atributos: cod_aluno e cod_disciplina, e ainda o atributo do relacionamento, nota.
+

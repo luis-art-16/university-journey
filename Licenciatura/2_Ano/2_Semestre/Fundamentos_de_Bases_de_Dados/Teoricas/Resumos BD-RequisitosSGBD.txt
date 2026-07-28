@@ -1,0 +1,187 @@
+		Requisitos Fundamentais de um SGBD
+
+Requisitos Fundamentais:
+
+- Segurança
+- Integridade
+- Controlo da Concorrência
+- Recuperação/Tolerância a Falhas
+
+
+	Segurança
+
+Objectivo: proteger os dados de acessos não autorizados.
+
+Tipos de medidas de segurança 
+. Segurança física
+. Segurança lógica (quem tem acesso, a quê e como lhe pode aceder) 
+
+
+Definir do perfil de um utilizador
+. Definição de “vistas” (a que dados pode aceder)
+. Definição de regras de autorização (como lhes pode aceder)
+Outras medidas
+. Ficheiros de audit trail 
+. Encriptação dos dados armazenados
+Granularidade dos mecanismos de segurança
+. Unidade base a que se deve controlar os acessos? 
+    - Pode ser desde a BD na totalidade até ao simples elemento de dados
+. Quanto maior for a granularidade, maior será o controlo, mas também será maior a sobrecarga do sistema.
+
+
+	Integridade
+
+Objectivo: os dados não contradizem a realidade que estão a representar.
+
+A base de dados evolui numa sequência de estados de integridade 
+
+
+- Apenas as operações de actualização (modificar dados existentes, apagar ou inserir novos dados) fazem evoluir a base de dados e, por isso, só essas podem por em causa a integridade 
+- Para que isso não aconteça, as actualizações são governadas por restrições de integridade. Alguns exemplos:
+. “Um funcionário não pode pertencer a mais que um departamento”
+. “Um estudante só pode inscrever-se em disciplinas do seu curso”
+. “O preço de venda de um produto deverá ser superior ao seu custo”
+. “O peso de cada lote deverá ser maior ou igual que 100Kg”
+. “A referência de cada produto deve ser única”
+
+- Restrições de integridade implícitas e explícitas 
+- Restrições de integridade explícitas: estáticas e dinâmicas
+   . Exemplo:
+      - Considerar um universo constituído pelos seguintes dados de funcionários: 
+	  . Cod_Fun, Nome, Salário
+      - governado pelas seguintes restrições de integridade:
+	  . “o salário de um funcionário deve ser superior ou igual ao salário mínimo nacional”
+	  . “o salário de um funcionário nunca poderá decrescer, só aumentar” 
+
+Responsabilidades na manutenção da integridade
+- Nível aplicacional
+- SGBD
+
+
+	Controlo da Concorrência
+
+- Coordena a partilha dos dados pelas várias aplicações e utilizadores.
+- Sistemas de Base de Dados Multi-utilizador.
+- Garantir que cada utilizador ou aplicação interage com a base de dados como se fosse o único a utilizar os serviços.
+- Unidade base de controlo da concorrência - a transacção.
+- Execução das transacções:
+    . Execução série: transacções executadas sequencialmente.
+    . Execução concorrente: intercala operações de leitura e escrita pertencentes a diversas transacções, no sentido de maximizar a utilização do sistema.
+
+Execução série versus execução concorrente
+
+   |	     |						   |
+T1 |---------|-|					   |
+T2 |	     | |--------------|				   |
+T3 |	     |		      |-------|		           |
+T4 |	     |			      |--------------------|
+   |_________|_____________________________________________|___________ >
+	    Ta					          Ts    tempo
+
+   |	     |			  |			Tc << Ts
+T1 |---------|-|		  |
+T2 | |-------|------|		  |
+T3 |    |----|--|		  |
+T4 |	   |-|--------------------|
+   |_________|____________________|__________________________________ >
+	    Ta			 Tc		             tempo
+
+- Execução concorrente traz grandes benefícios
+    . Melhor aproveitamento dos recursos
+    . Maior desempenho global do sistema
+- Contudo, pode trazer problemas…
+- Podem surgir sequências diferentes de operações, com resultados distintos…
+
+- Conclusão: as restrições de integridade, por si só, não bastam para garantir a integridade da base de dados.
+- Objectivo: Maximizar o nível de concorrência entre as transacções, mas de uma forma segura.
+- Escalonamentos de transacções
+    . Escalonamentos série -> o mesmo desempenho!
+
+- Escalonamentos concorrentes serializados
+    . Escalonamentos diferentes -> diferentes desempenhos!
+
+- Grafos de precedências
+    . Nodos -> representam transacções
+    . Arcos orientados -> representam dependências de I/O
+
+   n representa a versão do elemento E
+
+- Grafos de precedências (as três situações possíveis)
+    . A transacção Ti leu o elemento E que, posteriormente, foi actualizado pela transacção Tj
+    . A transacção Ti actualizou o elemento E que, posteriormente, foi lido pela transacção Tj
+    . A transacção Ti actualizou o elemento E que, posteriormente, foi também actualizado pela transacção Tj
+
+
+Escalonamento serializado: grafo de precedências sem ciclos
+
+- Métodos de controlo da concorrência
+    . Métodos optimistas
+    . Métodos preventivos
+	- Mecanismos de etiquetagem
+	- Mecanismos de locking 
+- Métodos de controlo da concorrência utilizando locking 
+    . Conceito de lock
+    . Locks binários
+    . Locks de leitura/escrita
+    . Locks evolutivos
+
+- O problema do deadlock 
+    Considerem-se as duas transacções (T1 e T2) que se seguem:
+		T1			T2
+		Rlock(A)		Rlock(B)
+		ler A			ler B
+		Rlock(B)		Rlock(A)
+		ler B			ler A
+		B = B + A		A = A * B
+		Wlock(B)		Wlock(A)
+		escrever B		escrever A
+		...			...
+- Solução para o problema: bloquear todos os elementos à cabeça da transacção.
+			Contudo -> livelock !!!
+
+- Detecção de deadlocks 
+    . Timeouts
+    . Grafos de espera
+
+- O Two-Phase Locking Protocol (2PL) 
+	1ª Fase – Obtenção de locks
+	2ª Fase – Libertação de locks
+
+- Condições de maximização do desempenho em 2PL
+    . Os locks são feitos à medida que vão sendo necessários
+    . Os locks devem ser o menos restritivos possível
+    . Os unlocks poderiam ser feitos à medida que os respectivos elementos deixam de ser necessários
+	- No entanto, possibilidade de rollback em cascata!
+	
+
+	Recuperação/Tolerância a Falhas
+
+- Recuperação/Tolerância a falhas 
+    . Objectivos
+    . Mecanismos de recuperação 
+	- Backups 
+	- Transaction logging
+	    . After-images
+	    . Before-images
+- Tipos de Falhas:
+    . Falhas de disco
+    . Falhas de sistema
+    . Falhas de transacção
+
+- Os mecanismos de recuperação são fundamentais, mas…
+    . Aumentam os acessos a disco
+    . Necessidade de maior espaço de armazenamento
+    . Sobrecarga de processamento (desprezável !) 
+
+- Bases de dados vs sistemas de gestão de ficheiros 
+    . Abstracção de detalhes de armazenamento dos dados 
+    . Independência programas/dados 
+    . Partilha de dados por todo o nível aplicacional
+    . Diminuição da redundância (um único repositório!)
+    . Desenvolvimento / Manutenção de alto nível
+    . Segurança dos dados
+    . Integridade dos dados
+    . Controlo da concorrência no acesso aos dados
+    . Mecanismos de recuperação a falhas 
+    . Questões ad hoc 
+

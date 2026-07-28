@@ -1,0 +1,181 @@
+				SQL
+		Processamento e Optimização de Questões
+
+- Objectivos 
+    . Obter a melhor utilização possível dos recursos do sistema
+    . Bons tempos de resposta perante:
+	- Cada vez maiores volumes de dados
+	- Cada vez mais solicitações concorrentes à base de dados
+- Pressupostos
+    . As questões são colocadas a muito alto nível
+    . As questões são apresentadas de forma declarativa, mas têm que ser resolvidas pelo sistema de forma procedimental
+    . Existem diversas formas de resolver uma mesma questão
+	- Necessário construir um bom plano de execução
+    . Uma questão pode ser colocada ao sistema de formas diferentes
+	- Linguagem natural -> SQL
+
+- Modelo relacional versus modelos pré-relacionais
+- O processamento de uma questão SQL implica:
+    . Análise da questão
+    . Optimização da questão
+    . Execução da questão
+- Na optimização de uma questão
+    . Quais as operações ?
+    . Qual a “melhor” sequência de execução ? 
+
+Exemplo: Junção entre relações
+
+Supondo o seguinte esquema relacional
+
+	Departamentos (cod_depart, nome_depart, orçamento, ...)
+	Funcionários (cod_func, nome_func, salário, cod_depart, ...)
+	Participações (cod_func, cod_proj, horas)
+	…
+	
+	A questão “quais os nomes dos funcionários do departamento de Informática que participaram no projecto XYZ ?”, poderá ser colocada em SQL da seguinte forma:
+
+	SELECT F.nome_func
+	FROM Departamentos D, Funcionarios F, Participacoes P
+	WHERE D.nome_depart = 'Informática' AND 
+		D.cod_depart = F.cod_depart AND 
+		P.cod_proj = 'XYZ' AND 
+		P.cod_func = F.cod_func
+
+1ª abordagem
+	Temp1 = (Departamentos oo Funcionários oo Participações)
+		_
+	Temp2 = b nome_depart = “Informática” /\ cod_proj = “XYZ” (Temp1)
+	__
+	|| nome_func (Temp2) 
+	 
+	Esta é uma abordagem com grandes custos para o sistema!
+
+2ª abordagem
+	 __	      _
+ Temp1 = || cod_func (b cod_proj = “XYZ” (Participações))
+	 __		_
+ Temp2 = || cod_depart (b nome_depart = “Informática” (Departamentos))
+  __
+  || nome_func (Temp1 oo (Funcionários oo Temp2)) 
+	 
+Esta é uma abordagem bastante mais vantajosa para o sistema !
+
+Conclusão
+-> Diferentes estratégias de resolução permitem obter os mesmos resultados com diferentes encargos para o sistema.
+
+No caso concreto das junções entre mais que duas tabelas, não é indiferente a sequência em que estas são executadas. Por exemplo:
+	 __	      _
+ Temp1 = || cod_func (b cod_proj = “XYZ” (Participações))
+	 __		_
+ Temp2 = || cod_depart (b nome_depart = “Informática” (Departamentos))
+  __
+  || nome_func (Temp1 oo (Funcionários oo Temp2))  é mais eficiente que:
+  __
+  || nome_func (Temp2 oo (Funcionários oo Temp1))
+
+
+O SGBD tem informação suficiente para decidir:
+- Optimização baseada em heurísticas;
+- Optimização baseada em custos.
+
+As limitações da SQL (entre outras…)
+    . Não existem instruções cíclicas nem de controlo de fluxo
+    . Não existem instruções para entrada/saída de dados 
+    . Não é possível definir funções ou procedimentos
+    . Não existe recursividade
+	Exemplo, o fecho transitivo de uma relação
+
+- Como obter o seu fecho transitivo, utilizando apenas SQL? 
+
+-> Não é possível!
+Apesar que, construtores como a Oracle, já desenvolveram as suas próprias soluções…
+
+Solução: linguagens de programação + SQL 
+    . Linguagem set-oriented versus linguagens record-oriented 
+    . Abordagens:
+	- Adicionar à SQL instruções para controlo de fluxo, definição de variáveis, funções e procedimentos (por exemplo, a PL/SQL, a TSQL). Contudo, …
+	- SQL embutido + Pré-compilador + Bibliotecas específicas
+    . Exemplos  (considerando a linguagem C como hospedeira)
+	- Todos comandos SQL  precedidos por -> EXEC SQL 
+
+Declaração de todas as variáveis em blocos bem definidos 
+ 	EXEC SQL BEGIN DECLARE SECTION;
+		< declaração das variáveis:
+      		cod_cli, conta, saldo, cliente,
+      		profissao e localidade >
+	EXEC SQL END DECLARE SECTION;
+	...
+	Estas variáveis são depois precedidas de : em qualquer comando 	SQL
+      		:cod_cli, :conta, :saldo, :cliente
+
+Tratamento de excepções através de 
+ 	EXEC SQL WHENEVER SQLERROR [CONTINUE | GOTO flag];
+	EXEC SQL WHENEVER NOTFOUND [CONTINUE | GOTO flag]; 
+
+Inserção de registos em tabelas 
+ 	...
+	<ler (cod_cli, cliente, localidade)>
+	EXEC SQL INSERT INTO Clientes
+         (cod_cliente, cliente, localidade)
+         VALUES (:cod_cli, :cliente, :localidade);
+	EXEC SQL COMMIT;
+	... 
+
+Alteração de registos 
+ 	...
+	<ler (cod_cli, profissao)>
+	EXEC SQL UPDATE Clientes
+         SET profissao = :profissao
+         WHERE cod_cliente = :cod_cli ;
+	EXEC SQL COMMIT;
+	...
+
+Remoção de registos 
+ 	...
+	<ler (cod_cli)>
+	EXEC SQL DELETE FROM Contas
+         WHERE cod_cliente = :cod_cli ;
+	EXEC SQL COMMIT;
+	... 
+
+Selecção de um registo 
+ 	...
+	<ler (conta)>
+	EXEC SQL WHENEVER NOTFOUND GOTO erro
+	EXEC SQL SELECT C.cod_cliente, C.saldo
+         	INTO :cod_cli, :saldo
+         	FROM Contas C
+         	WHERE C.num_conta = :conta ;
+	<escrever (cod_cli, saldo)>
+	...
+	erro:
+    		<escrever (“ERRO…!!!”)> 
+
+- Havendo necessidade de processar individualmente vários registos recorre-se a cursores
+- Definir um cursor 
+ 	EXEC SQL DECLARE Exemplo CURSOR FOR
+        	 SELECT C.num_conta, C.cod_agencia, C.saldo
+		 FROM Contas C
+		 WHERE C.cod_cliente = :cod_cli ; 
+
+- Instanciar um cursor 
+ 	EXEC SQL OPEN Exemplo ; 
+
+- Fechar um cursor 
+ 	EXEC SQL CLOSE Exemplo ; 
+
+- Processar um cursor 
+ 	EXEC SQL FETCH Exemplo
+	    INTO :conta, :cod_agencia, :saldo ;
+
+	EXEC SQL FETCH NEXT FROM Exemplo
+	    INTO :conta, :cod_agencia, :saldo ;
+
+- Outras opções para maior flexibilidade incluem: 
+ 	EXEC SQL FETCH PRIOR FROM Exemplo …
+	EXEC SQL FETCH FIRST FROM Exemplo …
+	EXEC SQL FETCH LAST FROM Exemplo …
+	EXEC SQL FETCH ABSOLUTE 10 FROM Exemplo …
+	EXEC SQL FETCH ABSOLUTE -10 FROM Exemplo …
+	EXEC SQL FETCH RELATIVE 10 FROM Exemplo …
+	EXEC SQL FETCH RELATIVE -10 FROM Exemplo … 

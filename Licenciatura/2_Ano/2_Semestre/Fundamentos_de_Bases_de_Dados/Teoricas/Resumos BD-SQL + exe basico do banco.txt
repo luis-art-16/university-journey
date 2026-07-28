@@ -1,0 +1,271 @@
+		Structured Query Language
+
+QBE – inspirada no Cálculo Relacional de domínios
+    . Utilização interactiva
+    . Para utilizadores menos “sofisticados”
+    . Exemplo, dada a relação:
+	Alunos (número, nome, curso, média, ano_finalização), a questão:
+	“quais os alunos (número e nome) com média final superior a 14?”
+
+QUEL – inspirada no Cálculo Relacional de tuplos
+    . Utilizada exclusivamente no SGBD Ingres
+    . Utilização interactiva ou programada
+    . Exemplo, dada a relação:
+	Alunos (número, nome, curso, média, ano_finalização), a questão:
+	“quais os alunos (número e nome) com média final superior a 14?”
+		RANGE OF a IS alunos
+		RETRIEVE (a.numero, a.nome)
+		WHERE a.media > 14
+
+Xbase
+    . Muito divulgadas na área das desktop databases
+    . Utilização interactiva ou programada
+    . dBASE
+    . Exemplo, dada a relação:
+	Alunos (número, nome, curso, média, ano_finalização), a questão:
+	“quais os alunos (número e nome) com média final superior a 14?”
+		USE alunos
+		DISPLAY ALL FIELDS numero, nome
+		FOR media > 14
+
+Linguagem SQL
+    . Considerada o standard em termos de linguagens relacionais
+    . Sujeita a normalização (SQL-86/89, SQL2, SQL3, …) 
+
+    . A SQL como:
+	- Linguagem de manipulação de dados (LMD)
+	    . Interrogação de bases de dados 
+	    . Actualização de bases de dados  
+
+	-  Linguagem de definição de dados (LDD)
+
+Instruções:
+    . de Interrogação: SELECT;
+    . de Actualização: INSERT, DELETE e UPDATE.
+
+Estrutura base do SELECT:
+	SELECT <atributos>
+	FROM <tabelas>
+	[WHERE <condição>]
+	[GROUP BY <atributo>]
+	[HAVING <condição>]
+	[ORDER BY <atributo>]
+
+Instruções apresentadas recorrendo ao exemplo:
+	
+	Clientes (cod_cliente, cliente, profissão, localidade) 
+	Agências (cod_agência, agência, localidade) 
+	Contas (num_conta, tipo_conta, cod_agência, cod_cliente, saldo)
+	Empréstimos (num_empréstimo, cod_agência, cod_cliente, valor) 
+
+Quais os clientes (cod_cliente e cliente) deste banco?
+	SELECT cod_cliente, cliente
+	FROM Clientes
+
+Quais os clientes que residem em Braga?
+	SELECT *
+	FROM Clientes
+	WHERE localidade = 'Braga'
+
+Quais os clientes (cod_cliente) com contas na agência cod_agencia=’123’? 
+
+	SELECT DISTINCT cod_cliente
+	FROM Contas
+	WHERE cod_agencia = '123'
+
+Quais os clientes que residem na mesma localidade das agências onde possuem contas? 
+	SELECT Clientes.*
+	FROM Clientes, Contas, Agencias
+	WHERE Clientes.localidade = Agencias.localidade
+     		AND Clientes.cod_cliente = Contas.cod_cliente
+     		AND Contas.cod_agencia = Agencias.cod_agencia
+
+É necessário o nome das tabelas para evitar ambiguidades.
+
+Quais os clientes com empréstimos de valor superior a 500.000? 
+
+	SELECT Clientes.*
+	FROM Clientes, Emprestimos
+	WHERE Clientes.cod_cliente = Emprestimos.cod_cliente
+		AND Emprestimos.valor > 500000
+
+	Utilizando sinónimos (aliases): 
+
+	SELECT C.*
+	FROM Clientes C, Emprestimos E
+	WHERE C.cod_cliente = E.cod_cliente
+		AND E.valor > 500000
+
+Quais os nomes dos clientes com a mesma profissão que o cliente com cod_cliente = ‘1234’? 
+	SELECT C1.cliente
+	FROM Clientes C1, Clientes C2
+	WHERE C1.profissao = C2.profissao
+		AND C2.cod_cliente = '1234' 
+
+Listar as contas (num_conta, saldo) da agência cujo cod_agencia = ‘123’, por ordem decrescente do seu valor de saldo. 
+	SELECT num_conta, saldo
+	FROM Contas
+	WHERE cod_agencia = '123'
+	ORDER BY saldo DESC 
+
+Quantas contas existem em todas as agências do banco?
+	SELECT COUNT(*)
+	FROM Contas 
+
+	Existem outras funções de agregação para o cálculo do máximo, do mínimo, da média e do somatório (respectivamente, MAX, MIN, AVG e SUM). 
+
+Quantos clientes possuem contas na agência cujo cod_agencia = ‘123’? 
+	SELECT COUNT (DISTINCT cod_cliente)
+	FROM Contas
+	WHERE cod_agencia = '123' 
+
+Listar o número de contas existentes em cada agência.
+	SELECT cod_agencia, COUNT(*)
+	FROM Contas
+	GROUP BY cod_agencia 
+
+Para cada agência (cod_agencia) com menos de 1000 contas, listar os valores máximo e mínimo dos saldos dessas contas, assim como o saldo médio.
+	SELECT cod_agencia, MAX(saldo), MIN(saldo), AVG(saldo)
+	FROM Contas
+	GROUP BY cod_agencia
+	HAVING COUNT(*) < 1000
+
+Quais os clientes cuja profissão é desconhecida?
+	SELECT *
+	FROM Clientes
+	WHERE profissao IS NULL 
+
+Quais os clientes (cod_cliente e cliente) da agência cod_agencia=‘123’?
+
+	SELECT Cl.cod_cliente, Cl.cliente
+	FROM Contas Co, Clientes Cl, Emprestimos E
+	WHERE (Co.cod_agencia = '123' 
+          AND	Co.cod_cliente = Cl.cod_cliente) OR
+	      (E.cod_agencia = '123' AND
+      		E.cod_cliente = Cl.cod_cliente)
+
+Ou (um UNION que substitui o OR de duas condições):
+
+
+	SELECT Cl.cod_cliente, Cl.cliente
+	FROM Contas Co, Clientes Cl
+	WHERE Co.cod_agencia = '123' 
+      		AND Co.cod_cliente = Cl.cod_cliente
+	UNION
+	SELECT Cl.cod_cliente, Cl.cliente
+	FROM Emprestimos E, Clientes Cl
+	WHERE E.cod_agencia = '123' 
+      		AND E.cod_cliente = Cl.cod_cliente
+
+Quais os clientes (cod_cliente e cliente) que são, simultaneamente, depositantes e devedores (de empréstimos) na agência cujo cod_agencia = ‘123’?
+
+	SELECT Cl.cod_cliente, Cl.cliente
+	FROM Contas Co, Clientes Cl
+	WHERE Co.cod_agencia = '123' 
+       		AND 	Co.cod_cliente = Cl.cod_cliente
+	INTERSECT 
+	SELECT Cl.cod_cliente, Cl.cliente
+	FROM Emprestimos E, Clientes Cl
+	WHERE E.cod_agencia = '123‘
+       		AND E.cod_cliente = Cl.cod_cliente 
+
+Ou:
+
+  SELECT Cl.cod_cliente, Cl.cliente
+	FROM Contas Co, Clientes Cl
+	WHERE (Co.cod_agencia = '123' 
+       		AND Co.cod_cliente = Cl.cod_cliente) 
+		AND (E.cod_agencia = '123‘
+       		AND E.cod_cliente = Cl.cod_cliente) 
+
+Quais os clientes (cod_cliente e cliente) da agência com cod_agencia = ‘123’ que apenas são depositantes? 
+
+	SELECT Cl.cod_cliente, Cl.cliente
+	FROM Contas Co, Clientes Cl
+	WHERE Co.cod_agencia = '123' 
+      		AND Co.cod_cliente = Cl.cod_cliente
+	EXCEPT 
+	SELECT Cl.cod_cliente, Cl.cliente
+	FROM Emprestimos E, Clientes Cl
+	WHERE E.cod_agencia = '123' 
+      		AND E.cod_cliente = Cl.cod_cliente 
+
+Quais os clientes (cod_cliente e cliente) com, pelo menos, um empréstimo no banco? 
+	SELECT C.cod_cliente, C.cliente
+	FROM Clientes C
+	WHERE EXISTS (SELECT *
+              FROM Emprestimos E
+              WHERE C.cod_cliente = E.cod_cliente)
+
+Ou,
+
+	SELECT cod_cliente, cliente
+	FROM Clientes
+	WHERE cod_cliente IN (SELECT cod_cliente
+              FROM Emprestimos)
+
+Quais as agências (cod_agencia, agencia) com depositantes residentes em Lisboa? 
+
+	SELECT A.cod_agencia, A.agencia
+	FROM Agencias A, Contas C
+	WHERE C.cod_cliente IN 
+      	   (SELECT cod_cliente
+       	   FROM Clientes
+       	   WHERE localidade = 'Lisboa') 
+    		AND  	C.cod_agencia = A.cod_agencia 
+
+Quais os clientes cujo saldo total das suas contas é superior ao valor de qualquer empréstimo contraído neste banco?  
+
+	SELECT Cl.*
+	FROM Clientes Cl
+	WHERE (SELECT SUM(Co.saldo)
+       	FROM Contas Co
+       	WHERE Co.cod_cliente = Cl.cod_cliente)
+       	> 
+      	(SELECT MAX (valor)
+       	 FROM Emprestimos) 
+
+Inserção de dados
+	INSERT INTO <tabela> [(<colunas>)]
+	  VALUES (<valores>)
+
+Alguns exemplos
+  INSERT INTO Clientes
+     VALUES('1234','J.Silva','Estudante','Braga')
+
+	INSERT INTO Clientes
+     (cod_cliente, cliente, localidade)
+     VALUES ('1235','A.Costa','Guimarães')
+
+  
+Alteração de dados
+	UPDATE <tabela>
+	SET <coluna> = <expressão>,
+        ...    =    ...
+	[WHERE <condição>]
+
+Alguns exemplos
+	UPDATE Contas
+	SET saldo = saldo + 1000
+	WHERE num_conta = '1234567890‘
+
+
+	UPDATE Contas
+	SET saldo = (SELECT MAX (saldo)
+               FROM Contas
+               WHERE cod_cliente = '1234')
+	WHERE cod_cliente = '1234' 
+
+Remoção de dados
+	DELETE FROM <tabela>
+	[WHERE <condição>]
+
+Alguns exemplos
+	DELETE FROM Contas
+	WHERE num_conta = '1234567890' 
+
+
+	DELETE FROM Clientes
+	WHERE cod_cliente IN (SELECT cod_cliente
+                        FROM Contas
+                        WHERE cod_agencia ='123')

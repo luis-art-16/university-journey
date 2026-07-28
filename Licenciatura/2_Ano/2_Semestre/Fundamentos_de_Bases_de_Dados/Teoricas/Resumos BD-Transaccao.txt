@@ -1,0 +1,93 @@
+		O Conceito de Transacção
+			SGBD
+
+- O SGBD é o único responsável pela validade dos dados armazenados 
+    . Incorporar mecanismos que garantam essa validade
+		-> O conceito de transacção 
+    . A transacção como unidade de trabalho
+    . Exemplo tradicional: “transferência entre duas contas bancárias”
+
+- Dadas duas funções Debitar(Conta_O, Montante) e Creditar(Conta_D, Montante), uma transferência entre duas contas bancárias equivale a invocar sequencialmente aquelas duas funções. 
+- O que acontece se, por alguma razão, numa transferência bancária depois de um débito não ocorre o correspondente crédito?
+
+Conclusão:
+    . As duas funções não podem ser utilizadas independentemente uma da outra.     . Só a sua execução conjunta é válida!
+    . Ou seja, é necessário envolvê-las numa transacção.
+
+Características de uma transacção (ACID):
+    . Atomicidade, ou existe um commit ou um rollback
+    . Integridade, da BD no final da transacção
+    . Isolamento, na execução paralela das transacções
+    . Persistência, após o commit de uma transacção 
+
+Flat Transactions
+    . forma mais simples;
+    . delimita o conjunto de operações que constituem uma transacção:
+		BEGIN TRANSACTION
+			…
+			<operações sobre a base de dados>
+			…
+		END TRANSACTION      /* faz o commit da transacção */
+    . delimitação da transacção da responsabilidade do nível aplicacional;
+    . ou todas as operações têm sucesso, ou nenhuma tem sucesso
+
+- O “tudo ou nada”é demasiado limitado em determinados contextos.
+- Exemplo:
+    . 100.000 clientes
+    . prémio de assiduidade de 10%
+	BEGIN TRANSACTION
+		para cada cliente
+			ler total_compras
+			ler prémios
+			prémios = prémios + 0.1 * total_compras
+			escrever prémios
+	END TRANSACTION
+
+Crash no penúltimo cliente!
+
+Savepoints
+    . Pontos intermédios, que dividem uma transacção em várias partes.
+    . Permitem desfazer (rollback) ou refazer (rollforward) partes da transacção.
+		BEGIN TRANSACTION
+			…
+			<operações sobre a base de dados>
+			…
+		SAVE POINT <x>
+			…
+			<operações sobre a base de dados>
+			…
+		END TRANSACTION      /* faz o commit da transacção */
+
+Chained Transactions
+    . Pontos intermédios correspondem a commit. 
+    . Rollback ou rollforward limitado ao ponto de commit anterior. 
+		BEGIN TRANSACTION
+			…
+			<operações sobre a base de dados>
+			…
+		COMMIT POINT 
+			…
+			<operações sobre a base de dados>
+			…
+		COMMIT POINT 
+			…
+			<operações sobre a base de dados>
+		END TRANSACTION      /* faz o commit final da transacção */
+
+Nested Transactions
+    . Mais flexíveis.
+    . Correspondem a uma hierarquia de transacções (subtransacções).
+    . Subtransacções: flat ou nested transactions.
+    . Cada subtransacção pode ser finalizada ou desfeita, independentemente de todas as outras transacções.
+    . Pressupostos:
+	- o commit de uma subtransacção só será efectivo após a sua transacção-pai ter finalizado também e assim sucessivamente;
+	- o commit de uma subtransacção apenas é visível (os seus efeitos) à transacção-pai.
+	- o rollback de uma subtransacção implica o rollback de todas as suas subtransacções.
+
+- Contudo, num ambiente tradicional de processamento de transacções o que acontece é que: 
+    . 96% das transacções terminam com sucesso (commit) 
+    . 3% das transacções invocam o seu próprio rollback 
+    . 1% das transacções são abortadas
+- Conclusão:
+    . As flat transactions, dada a raridade das situações adversas, parecem ser viáveis neste tipo de ambientes. 
+
