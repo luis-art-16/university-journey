@@ -1,0 +1,120 @@
+
+Grupo II SO
+
+
+
+int n_pipe = 0;
+for(int i =2, i<argc; i++)
+	pipe(pipe_fd n_pipe][0]);
+
+dup2(pipe_fd[n_pipe][1], STDOU_FILENO); 
+close(pipe_fd[n_pipe][1]);
+
+
+execlp(argv[i], argv[i]
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <string.h>
+
+#define BUFFER_SIZE 4096
+
+int main(int argc, char *argv[]) {
+    if (argc < 3) {
+        write(STDERR_FILENO, "Erro: Uso incorreto.\n", 21);
+        write(STDERR_FILENO, "Formato: <ficheiro de entrada> <filtro1> [<filtro2> ...]\n", 52);
+        return EXIT_FAILURE;
+    }
+
+    const char *input_file = argv[1];
+    int num_filters = argc - 2;
+    const char **filters = (const char **)&argv[2];
+
+    int pipes[num_filters][2];
+    pid_t pids[num_filters];
+
+    // Criar pipes e processos filhos
+    for (int i = 0; i < num_filters; i++) {
+        if (pipe(pipes[i]) == -1) {
+            perror("pipe");
+            exit(EXIT_FAILURE);
+        }
+
+        pids[i] = fork();
+        if (pids[i] == -1) {
+            perror("fork");
+            exit(EXIT_FAILURE);
+        }
+
+        if (pids[i] == 0) { // Processo filho
+            close(pipes[i][0]); // Fechar leitura do pipe
+
+            int input_fd = open(input_file, O_RDONLY);
+            if (input_fd == -1) {
+                perror("open");
+                exit(EXIT_FAILURE);
+            }
+
+            // Redirecionar stdin para o ficheiro de entrada
+            dup2(input_fd, STDIN_FILENO);
+            close(input_fd);
+
+            // Redirecionar stdout para o pipe
+            dup2(pipes[i][1], STDOUT_FILENO);
+            close(pipes[i][1]);
+
+            execlp(filters[i], filters[i], NULL); // Executar o programa filtro
+            perror("execlp");
+            exit(EXIT_FAILURE);
+        } else { // Processo pai
+            close(pipes[i][1]); // Fechar escrita do pipe
+        }
+    }
+
+    // Processo principal lê os outputs dos pipes
+    char buffer[BUFFER_SIZE];
+    int max_size = -1;
+    int max_index = -1;
+
+    for (int i = 0; i < num_filters; i++) {
+        int total_size = 0;
+        int bytes_read;
+
+        while ((bytes_read = read(pipes[i][0], buffer, BUFFER_SIZE)) > 0) {
+            total_size += bytes_read;
+        }
+        close(pipes[i][0]);
+
+        if (total_size > max_size) {
+            max_size = total_size;
+            max_index = i;
+        }
+
+        // Esperar pelo término do processo filho
+        waitpid(pids[i], NULL, 0);
+    }
+
+    if (max_index != -1) {
+        char result[256];
+        int len = snprintf(result, sizeof(result), "O filtro com maior output (%d bytes) foi: %s\n", max_size, filters[max_index]);
+        write(STDOUT_FILENO, result, len);
+    } else {
+        write(STDERR_FILENO, "Erro: Nenhum filtro foi executado com sucesso.\n", 45);
+    }
+
+    return EXIT_SUCCESS;
+}
+
+
+
+
+
+
+
+
