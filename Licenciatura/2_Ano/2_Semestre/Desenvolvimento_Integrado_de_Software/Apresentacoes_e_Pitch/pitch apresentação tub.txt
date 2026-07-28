@@ -1,0 +1,162 @@
+
+Apresentação para a TUB: Transformando o Transporte Público com Tecnologia Inteligente
+
+Slide 1: Título e Introdução
+
+Título: TUB: O Futuro Inteligente do Transporte Público
+Subtítulo: Uma Solução Completa com Detecção de Infrações, Reserva de Lugares e Mais
+Imagem: Uma foto inspiradora de um ônibus moderno em movimento, com a cidade ao fundo.
+
+Slide 2: O Problema
+
+Problema: Aumento de infrações de trânsito, congestionamentos e falta de segurança nos ônibus.
+Impacto: Custos elevados para a TUB, perda de tempo para os passageiros e frustração geral.
+Pergunta: Como podemos transformar o transporte público em uma experiência eficiente, segura e agradável para todos?
+
+Slide 3: A Solução
+
+Apresentação da solução: Aplicativo inovador com recursos de detecção de infrações por câmeras, reserva de lugares e muito mais.
+Benefícios:
+Redução significativa de infrações e acidentes.
+Diminuição do congestionamento e otimização do fluxo de passageiros.
+Maior segurança e conforto para os passageiros.
+Melhoria na imagem da TUB e aumento da satisfação dos clientes.
+Otimização de custos e aumento da receita.
+
+Slide 4: Modelo Canvas
+
+Key Partners:
+Google Maps: Integração com mapas para otimização de rotas e informações em tempo real.
+NeAdvance: Desenvolvimento e manutenção da plataforma tecnológica.
+Vodafone: Parceria para serviços de conectividade e armazenamento em nuvem.
+Key Activities:
+Desenvolvimento e aprimoramento contínuo da plataforma.
+Gerenciamento de dados e geração de relatórios.
+Treinamento e suporte aos motoristas e passageiros.
+Marketing e comunicação para promover a solução.
+Key Resources:
+Plataforma tecnológica robusta e escalável.
+Câmeras de alta resolução para detecção precisa de infrações.
+Equipe qualificada de profissionais de tecnologia, transporte e segurança.
+Rede de parceiros confiáveis e experientes.
+
+Slide 5: Relações com Clientes
+
+Value Propositions:
+Transporte público mais seguro, eficiente e confortável.
+Experiência de viagem personalizada e agradável.
+Redução do tempo de espera e otimização do trajeto.
+Maior transparência e comunicação com os passageiros.
+Customer Relationships:
+Suporte ao cliente 24/7 através do aplicativo e outros canais.
+Programa de fidelidade e benefícios para clientes frequentes.
+Coleta de feedback e sugestões para aprimorar a solução.
+Channels:
+Aplicativo móvel para smartphones e tablets.
+Website informativo e acessível.
+Campanhas de marketing em diversos canais.
+Parcerias com empresas e instituições relevantes.
+Customer Segments:
+Passageiros frequentes e ocasionais do transporte público.
+Motoristas e operadores de ônibus.
+Autoridades públicas e empresas de trânsito.
+
+Slide 6: Custos
+
+Cost Structure:
+Desenvolvimento e manutenção da plataforma tecnológica.
+Aquisição e instalação de câmeras nos ônibus.
+Serviços de conectividade e armazenamento em nuvem.
+Pessoal para suporte técnico e atendimento ao cliente.
+Marketing e comunicação.
+Revenue Streams:
+Tarifas de assinatura para uso da plataforma por parte da TUB.
+Multas de trânsito geradas pela detecção de infrações.
+Venda de dados agregados e anonimizados para fins de pesquisa e análise.
+Parcerias com empresas para publicidade direcionada dentro do aplicativo.
+
+Slide 7: Conclusão
+
+Reiterar os benefícios da solução:
+Segurança: Redução de infrações e acidentes.
+Eficiência: Otimização do fluxo de passageiros e diminuição do tempo de espera.
+Conforto: Maior comodidade para os passageiros com reserva de lugares e informações em tempo real.
+Sustentabilidade: Contribuição para um transporte público mais verde e ecologicamente correto.
+Chamada para ação:
+Convidar a TUB a se tornar parceira na construção de um futuro mais inteligente para o transporte público.
+Enfatizar o compromisso da empresa em oferecer soluções inovadoras e eficazes para os desafios do transporte urbano.
+
+Slide 8: Projeções Financeiras
+
+Neste slide, apresnetamos as projeções financeiras detalhadas do projeto em euros (€), demonstrando o potencial de retorno do investimento para a TUB.
+
+Estrutura do Slide:
+
+Título: Projeções Financeiras
+
+Subtítulo: Retorno do Investimento para a TUB
+
+Gráfico de Linha:
+
+Receita projetada ao longo de 5 anos (em euros):
+Ano 1: €8 milhões
+Ano 2: €16 milhões
+Ano 3: €24 milhões
+Ano 4: €32 milhões
+Ano 5: €40 milhões
+
+Gráfico:
+
+Distribuição da receita projetada por fonte de receita (em porcentagem):
+Tarifas de assinatura: 60%
+Multas de trânsito: 30%
+Venda de dados: 10%
+
+Tabela:
+
+Custo	        Valor (em euros)
+Desenvolvimento	€4 milhões
+Manutenção	€800.000/ano
+Operação	€1.6 milhões/ano
+Total	        €2.4 milhões/ano
+
+
+Cálculo do ROI:
+
+Investimento inicial: €4 milhões
+Receita total projetada em 5 anos (em euros): €120 milhões
+Lucro líquido projetado em 5 anos (em euros): €56 milhões
+ROI: 1400%
+
+Análise de Sensibilidade:
+
+Redução de 10% na receita (em euros): ROI de 1200%
+Aumento de 10% nos custos (em euros): ROI de 1100%
+
+Conclusão:
+
+O projeto de implementação de um sistema de detecção de infrações e reserva de lugares em ônibus da TUB apresenta um potencial de retorno do investimento excepcional, com um ROI de 1400%. A análise de sensibilidade demonstra a confiabilidade do projeto, mesmo em cenários de variação na receita ou nos custos.
+
+Este slide é crucial para convencer a TUB da viabilidade financeira do projeto e do seu impacto positivo nos resultados da empresa.
+
+
+Slide 9: Estudo de Caso
+Apresentar um estudo de caso real:
+Detalhar a implementação da solução em outra cidade ou região.
+Quantificar os resultados obtidos em termos de redução de infrações, otimização do tempo de espera, aumento da satisfação do cliente, etc.
+Demonstrar a viabilidade e o impacto positivo da solução em diferentes contextos.
+
+Slide 10: Próximos Passos
+Descrever os próximos passos da parceria:
+Fase de planejamento e definição de metas específicas.
+Implementação piloto em um número limitado de linhas ou regiões.
+Avaliação dos resultados e ajustes na plataforma.
+Expansão gradual para toda a frota de ônibus da TUB.
+
+Slide 11: Perguntas e Respostas
+Abrir espaço para perguntas da plateia e esclarecimento de dúvidas.
+Enfatizar a disponibilidade da equipe para fornecer mais informações e discutir o projeto em detalhes.
+
+
+
+Nota: Adicionar videos da NIOP no fim para demonstrar como funcionaria a nossa aplicação!
