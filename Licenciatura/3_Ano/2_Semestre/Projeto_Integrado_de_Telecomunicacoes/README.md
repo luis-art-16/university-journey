@@ -8,6 +8,13 @@
 Unidade curricular de projeto integrador do 3º ano, desenhada para aplicar os conhecimentos acumulados de redes, sistemas distribuídos, eletrónica e programação na conceção, desenvolvimento e validação de um sistema tecnológico completo, dividido em três fases evolutivas (**Fase A, Fase B e Fase C**).
 
 ---
+## 🎥 System Demonstration (Video)
+
+To avoid repository bloat with large media files, the complete functional demonstration of the **HealthSync** platform is hosted on YouTube:
+
+[![HealthSync Demo - Vital Signs Monitoring Platform](https://img.youtube.com/vi/y_q4S56PmVE/0.jpg)](https://youtu.be/y_q4S56PmVE)
+
+*Click the image above to watch the full system demonstration on YouTube.*
 
 ## 🏆 Projeto Desenvolvido: HealthSync
 O **HealthSync** é uma plataforma IoT abrangente desenvolvida para a monitorização contínua e em tempo real de sinais vitais (temperatura, frequência cardíaca, nível de oxigénio no sangue - $SpO_2$ e movimento), integrando recolha por hardware (*wearables*), transmissão sem fios de baixa latência, processamento analítico em backend e dashboards interativos para doentes, cuidadores e profissionais de saúde.
