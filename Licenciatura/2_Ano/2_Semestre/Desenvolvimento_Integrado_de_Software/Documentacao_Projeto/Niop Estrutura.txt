@@ -1,0 +1,195 @@
+Niop Estrutura
+
+Páginas a partir dos casos de Uso:
+
+Casos de Uso:
+
+Caso de Uso 1 -> Fazer Login
+
+1 - Ecrã Inicial 
+
+Label (Bem vindo de volta)
+Image (Spotless)
+Label (Nunca percas o lugar!)
+
+Button (Login)
+Button (Registo)
+Button (Controlo)
+
+2 - Ecrã de Login
+
+Label (Spotless)
+Login Form
+
+Button (Login)
+
+3 - Ecrã de Registo
+
+Label (Spotless)
+Register Form
+Check Box (Autorizo o uso dos meus dados)
+Button (Criar Conta)
+
+4 - Ecrã de Login de controlo (Fiscalizador)
+
+Label (Spotless)
+Login Form
+Button (Login)
+
+Caso de Uso 2 -> Iniciar Estacionamento
+
+5 - Menu Principal Cidadão
+
+Label (Spotless)
+
+Button (Check-in)
+Button (Check-out)
+Button (Reservar Lugar)
+Button (Ver Ocupação)
+Button (Pagar Aviso)
+Button (Gerir Conta)
+Button (Verificar Histórico)
+Button (Terminar Sessão)
+
+6 - Menu Principal Fiscalizador
+
+Button (Ver Alertas)
+Button (Ver câmaras ativas)
+
+7 - Check In (Registar Veículo, Selecionar Rua(Mapa), Guardar Localização (Botão))
+
+Button(<) - seta para voltar atrás
+Label(Check-in)
+Mapa
+Text Input (Insira a matrícula)
+Button (Fazer Check-In)
+
+8 - Pos Check In (Selecionar Data e Duração)
+Button(<) - seta para voltar atrás
+Label (Check-in)
+label (Insere a data)
+Text Input (Data)
+Label (Insere a hora)
+text Input (Hora)
+Button (Finalizar Check-in)
+
+
+9 - Check Out ( Inserir Matricula, Check Out Botão)
+
+Button(<) - seta para voltar atrás
+Label (Check-out)
+Text Input (Insira a matrícula)
+
+10 - Reserva
+
+Button(<) - seta para voltar atrás
+Label (Realizar Reserva)
+label (Insere a data)
+Text Input (Data)
+Label (Insere a hora)
+Text Input (Hora)
+Label (Selecionar método de Pagamento)
+Combo Box (MbWay: 
+
+- Label (Inserir Número de Telemóvel); Text input (Insira o número de telemóvel)
+
+Visa/Mastercard: 
+- Label (Inserir Número de cartão); Text input (Insera o número do cartão);
+
+-Label (Inserir Data de validade); Text Input (Insera a Data de validade) 
+
+-Label (CVC); text input (CVC)
+
+)
+Button (Reservar)
+
+11 -Verificar Vagas (Ocupação)
+
+Button(<) - seta para voltar atrás
+Label (Ocupação)
+Mapa (EUB)
+
+
+Caso de Uso 3 -> Pagar aviso
+
+12 - Pagar Aviso
+
+Button (<) - seta para voltar atrás
+Label (Pagar Aviso)
+Label (Inserir referência)
+Label (Selecionar método de Pagamento)
+Combo Box (MbWay: 
+
+- Label (Inserir Número de Telemóvel); Text input (Insira o número de telemóvel)
+
+Visa/Mastercard: 
+- Label (Inserir Número de cartão); Text input (Insera o número do cartão);
+
+-Label (Inserir Data de validade); Text Input (Insera a Data de validade) 
+
+-Label (CVC); text input (CVC)
+
+)
+Check Box (Emitir Recibo)
+Button (Efetuar pagagemnto)
+
+Caso de Uso 4 -> Gerir Conta (deixar para o fim) - É preciso ter uma base de dados
+
+13 - Gerir Conta
+
+Button (<) - seta para voltar atrás
+Label (Gerir Perfil)
+Label (Alterar Email)
+Text Input (Insira o novo Email)
+Label (Alterar Morada)
+Text Input (Insira a nova morada)
+Text Input (Insira o código-postal)
+Text Input (Insira a Cidade)
+Label (Alterar Contacto)
+Text Input( Insira o novo Contacto)
+Label (Alterar o NIF)
+Text Input(Insira o novo NIF)
+Label (Alterar morada de Fatruração)
+Text Input (Insira a nova morada de faturação)
+Label (Alterar Palavra passe)
+Text input (Insira a Palavra-passe atual)
+Text Input (Insira a Palavra-passe nova)
+
+14 - Verificar Histórico
+
+Button (<) - seta para voltar atrás
+Label (Verificar Histórico)
+Label (Consultar recibos)
+Combo Box (Lista de Recibos - Guardados numa bd) 
+
+
+Caso de Uso 5 -> Gerir Câmaras (Acesso restrito ao Fiscalizador)
+
+15 - Verificar Alertas (Página restrita ao fiscalizador, que dá login no "controlo")
+
+Button (<) - seta para voltar atrás ao menu principal do fiscalizador
+Label (Verificar alertas)
+Combo box (Lista de alertas)
+Image (Imagem da infração)
+
+16 - Verificar Câmaras ativas
+
+Button (<) - seta para voltar atrás ao menu principal do fiscalizador
+Label (Verificar câmaras ativas)
+Combo box (Lista de câmaras ativas)
+
+17 - Verificar Infrações (Página destinada às Câmaras)
+
+17.1 - Process_Identify
+17.2 - Process_Shape
+17.3 - Process_ColorOFLines
+17.4 - 
+
+
+
+
+
+
+
+
+
