@@ -1,0 +1,186 @@
+GR-TRAFEGO-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, Integer32, Gauge32
+        FROM SNMPv2-SMI
+    experimental
+        FROM SNMPv2-SMI;
+
+-- Definição do nó base da Universidade do Minho
+-- Corresponde ao teu BASE_OID = .1.3.6.1.3.1
+uminho MODULE-IDENTITY
+    LAST-UPDATED "202510290000Z" -- Data fictícia
+    ORGANIZATION "Universidade do Minho"
+    CONTACT-INFO "..."
+    DESCRIPTION  "Base MIB para projetos da UMinho (experimental)."
+    ::= { experimental 1 } -- .1.3.6.1.3.1
+
+-- Definição do módulo de Gestão de Tráfego
+-- OID: .1.3.6.1.3.1.1
+grTrafego MODULE-IDENTITY
+    LAST-UPDATED "202510290000Z"
+    ORGANIZATION "Universidade do Minho - GVR"
+    CONTACT-INFO "..."
+    DESCRIPTION  "MIB do Sistema de Gestão de Tráfego Rodoviário."
+    ::= { uminho 1 }
+
+-- ======================================================================
+-- 1. Tabela de Vias (A que já tinhas)
+-- OID: .1.3.6.1.3.1.1.1
+-- ======================================================================
+
+viaTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF ViaEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "Tabela de vias rodoviárias. Cada via é um troço
+                 de sentido único que termina num semáforo."
+    ::= { grTrafego 1 } -- .1.3.6.1.3.1.1.1
+
+viaEntry OBJECT-TYPE
+    SYNTAX      ViaEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "Uma entrada (linha) na tabela de vias."
+    INDEX   { viaIndex } -- Indexado por viaIndex
+    ::= { viaTable 1 } -- .1.3.6.1.3.1.1.1.1
+
+ViaEntry ::= SEQUENCE {
+    viaIndex        Integer32,
+    viaID           Integer32,
+    viaDescricao    OCTET STRING,
+    veiculosNaVia   Gauge32,
+    corSemaforo     Integer32,
+    tempoVerde      Integer32,
+    tempoVermelho   Integer32,
+    ritmoEntrada    Integer32
+}
+
+-- Colunas da viaTable (baseado em TrafficMIB.java)
+
+viaIndex OBJECT-TYPE
+    SYNTAX      Integer32 (1..2147483647)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Índice único para esta entrada da tabela."
+    ::= { viaEntry 1 } -- ...1.1.1.1.1
+
+viaID OBJECT-TYPE
+    SYNTAX      Integer32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "ID lógico da via (igual ao viaIndex por default)."
+    ::= { viaEntry 2 } -- ...1.1.1.1.2 (campo=2)
+
+viaDescricao OBJECT-TYPE
+    SYNTAX      OCTET STRING (SIZE (0..255))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Descrição textual da via (ex: Entrada Norte)."
+    ::= { viaEntry 3 } -- ...1.1.1.1.3 (campo=3)
+
+veiculosNaVia OBJECT-TYPE
+    SYNTAX      Gauge32
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION "Número de veículos atualmente nesta via."
+    ::= { viaEntry 4 } -- ...1.1.1.1.4 (campo=4)
+
+corSemaforo OBJECT-TYPE
+    SYNTAX      Integer32 { verde(1), amarelo(2), vermelho(3) }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION "Cor atual do semáforo no final da via."
+    ::= { viaEntry 5 } -- ...1.1.1.1.5 (campo=5)
+
+tempoVerde OBJECT-TYPE
+    SYNTAX      Integer32 (5..120) -- Segundos
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION "Tempo de verde configurado para este semáforo."
+    ::= { viaEntry 6 } -- ...1.1.1.1.6 (campo=6)
+
+tempoVermelho OBJECT-TYPE
+    SYNTAX      Integer32 (5..120) -- Segundos
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION "Tempo de vermelho configurado para este semáforo."
+    ::= { viaEntry 7 } -- ...1.1.1.1.7 (campo=7)
+
+ritmoEntrada OBJECT-TYPE
+    SYNTAX      Integer32 (0..100) -- v/min
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION "Ritmo Gerador de Tráfego (RGT) para esta via."
+    ::= { viaEntry 8 } -- ...1.1.1.1.8 (campo=8)
+
+
+-- ======================================================================
+-- 2. Tabela de Destinos (A NOVA TABELA)
+-- OID: .1.3.6.1.3.1.1.2
+-- ======================================================================
+
+destTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF DestEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "Tabela de mapeamento de destinos. Define para
+                 onde o tráfego de uma 'viaEntry' (Origem) flui e a que
+                 ritmo."
+    ::= { grTrafego 2 } -- .1.3.6.1.3.1.1.2
+
+destEntry OBJECT-TYPE
+    SYNTAX      DestEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "Uma única ligação origem-destino.
+                 O índice 'viaIndex' é o 'viaIndex' da via de ORIGEM.
+                 O 'destViaID' é o 'viaIndex' da via de DESTINO."
+    INDEX   { viaIndex, destViaID } -- Chave composta!
+    ::= { destTable 1 } -- .1.3.6.1.3.1.1.2.1
+
+DestEntry ::= SEQUENCE {
+    destViaID     Integer32,
+    destRitmo     Integer32
+}
+
+-- Colunas da destTable
+
+destViaID OBJECT-TYPE
+    SYNTAX      Integer32 (1..2147483647)
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION "O 'viaIndex' da via de DESTINO para onde o tráfego flui.
+                 Este valor deve corresponder a um 'viaIndex' da 'viaTable'."
+    ::= { destEntry 1 } -- ...1.1.2.1.1
+
+destRitmo OBJECT-TYPE
+    SYNTAX      Integer32 (0..1000) -- Veículos/minuto
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION "O ritmo de escoamento (veículos/minuto) para esta
+                 ligação específica (origem->destino) quando o
+                 semáforo da via de origem está verde."
+    ::= { destEntry 2 } -- ...1.1.2.1.2
+
+
+-- ======================================================================
+-- 3. Objeto de Controlo Manual (A "Caixa de Correio")
+-- OID: .1.3.6.1.3.1.2.0
+-- ======================================================================
+
+-- Nó para objetos de controlo, separado da tabela de dados
+grControl OBJECT IDENTIFIER ::= { uminho 2 } -- .1.3.6.1.3.1.2
+
+viaControlRequest OBJECT-TYPE
+    SYNTAX      Integer32 (0..2147483647)
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION "Caixa de correio para controlo manual do semáforo.
+                 SET: Escrever o 'viaIndex' da via (de entrada) desejada
+                      para VERDE. O SD processará este pedido.
+                 GET: Lê o último pedido. O SD deve pôr a 0
+                      após processar."
+    ::= { grControl 0 } -- .1.3.6.1.3.1.2.0
+
+END

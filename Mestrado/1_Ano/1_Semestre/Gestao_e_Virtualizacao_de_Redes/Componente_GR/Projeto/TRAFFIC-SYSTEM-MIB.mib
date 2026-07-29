@@ -1,0 +1,401 @@
+TRAFFIC-SYSTEM-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    MODULE-IDENTITY, OBJECT-TYPE, Integer32, Unsigned32,
+    OBJECT-IDENTITY, TimeTicks, NOTIFICATION-TYPE, enterprises
+        FROM SNMPv2-SMI
+    TEXTUAL-CONVENTION, DisplayString, TruthValue, RowStatus
+        FROM SNMPv2-TC
+    MODULE-COMPLIANCE, OBJECT-GROUP, NOTIFICATION-GROUP
+        FROM SNMPv2-CONF;
+
+trafficSystem MODULE-IDENTITY
+    LAST-UPDATED "202512010000Z"
+    ORGANIZATION "University of Minho - Department of Informatics"
+    CONTACT-INFO
+        "GVR - Network Management
+         Email: gvr@di.uminho.pt"
+    DESCRIPTION
+        "MIB for Road Traffic Management System"
+    REVISION "202512010000Z"
+    DESCRIPTION
+        "Initial version"
+    ::= { enterprises 12345 }
+
+-- Main OID tree
+trafficSystemObjects      OBJECT IDENTIFIER ::= { trafficSystem 1 }
+trafficSystemTraps        OBJECT IDENTIFIER ::= { trafficSystem 2 }
+
+-- Global Configuration Objects
+trafficSystemConfig       OBJECT IDENTIFIER ::= { trafficSystemObjects 0 }
+
+trafficSystemSimulationStep OBJECT-TYPE
+    SYNTAX      Integer32 (1..60)
+    UNITS       "seconds"
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "Interval between each simulation cycle in seconds."
+    DEFVAL      { 5 }
+    ::= { trafficSystemConfig 1 }
+
+trafficSystemYellowTime OBJECT-TYPE
+    SYNTAX      Integer32 (1..10)
+    UNITS       "seconds"
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "Duration for yellow light in all traffic lights. Value applies system-wide."
+    DEFVAL      { 3 }
+    ::= { trafficSystemConfig 2 }
+
+trafficSystemStatus OBJECT-TYPE
+    SYNTAX      INTEGER { stopped(1), running(2), paused(3) }
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "Current state of the road traffic simulation."
+    DEFVAL      { stopped }
+    ::= { trafficSystemConfig 3 }
+
+-- Roadway Table
+trafficSystemRoadTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF TrafficSystemRoadEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Table of roadways (street segments) in the system. Each entry represents detailed data and configuration for a managed road section."
+    ::= { trafficSystemObjects 1 }
+
+trafficSystemRoadEntry OBJECT-TYPE
+    SYNTAX      TrafficSystemRoadEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "An entry representing a street segment, with all traffic parameters and light configuration."
+    INDEX { trafficSystemRoadID }
+    ::= { trafficSystemRoadTable 1 }
+
+TrafficSystemRoadEntry ::= SEQUENCE {
+    trafficSystemRoadID               Integer32,
+    trafficSystemRoadName             DisplayString,
+    trafficSystemCurrentVehicles      Integer32,
+    trafficSystemMaxCapacity          Integer32,
+    trafficSystemTrafficGenerationRate Integer32,
+    trafficSystemSemaphoreColor       TrafficSemaphoreColor,
+    trafficSystemGreenTime            Integer32,
+    trafficSystemRedTime              Integer32,
+    trafficSystemTimeRemaining        Integer32,
+    trafficSystemIsEntryPoint         TruthValue,
+    trafficSystemIsExitPoint          TruthValue,
+    trafficSystemRoadRowStatus        RowStatus
+}
+
+trafficSystemRoadID OBJECT-TYPE
+    SYNTAX      Integer32 (1..1000)
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Unique integer identifier for the road or segment (serves as table index)."
+    ::= { trafficSystemRoadEntry 1 }
+
+trafficSystemRoadName OBJECT-TYPE
+    SYNTAX      DisplayString (SIZE (1..64))
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Descriptive road or segment name."
+    ::= { trafficSystemRoadEntry 2 }
+
+trafficSystemCurrentVehicles OBJECT-TYPE
+    SYNTAX      Integer32 (0..10000)
+    UNITS       "vehicles"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Current number of vehicles on the street segment."
+    ::= { trafficSystemRoadEntry 3 }
+
+trafficSystemMaxCapacity OBJECT-TYPE
+    SYNTAX      Integer32 (1..10000)
+    UNITS       "vehicles"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Maximum vehicle capacity of the street segment."
+    ::= { trafficSystemRoadEntry 4 }
+
+trafficSystemTrafficGenerationRate OBJECT-TYPE
+    SYNTAX      Integer32 (0..1000)
+    UNITS       "vehicles/minute"
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "Traffic generation rate for this entry point (0 means not an entry). Allows SNMP-SET for external simulation control."
+    DEFVAL      { 0 }
+    ::= { trafficSystemRoadEntry 5 }
+
+TrafficSemaphoreColor ::= TEXTUAL-CONVENTION
+    STATUS      current
+    DESCRIPTION
+        "The set of allowed traffic light colors for a road segment."
+    SYNTAX      INTEGER {
+        red(1),
+        yellow(2),
+        green(3),
+        notApplicable(4)
+    }
+
+trafficSystemSemaphoreColor OBJECT-TYPE
+    SYNTAX      TrafficSemaphoreColor
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "The current color active on the traffic light at the end of this segment."
+    ::= { trafficSystemRoadEntry 6 }
+
+trafficSystemGreenTime OBJECT-TYPE
+    SYNTAX      Integer32 (5..300)
+    UNITS       "seconds"
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "Configured green time period for this traffic light."
+    DEFVAL      { 30 }
+    ::= { trafficSystemRoadEntry 7 }
+
+trafficSystemRedTime OBJECT-TYPE
+    SYNTAX      Integer32 (5..300)
+    UNITS       "seconds"
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "Configured red time period for this traffic light."
+    DEFVAL      { 30 }
+    ::= { trafficSystemRoadEntry 8 }
+
+trafficSystemTimeRemaining OBJECT-TYPE
+    SYNTAX      Integer32 (0..3600)
+    UNITS       "seconds"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Time in seconds remaining until the next signal color change."
+    ::= { trafficSystemRoadEntry 9 }
+
+trafficSystemIsEntryPoint OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "True if this road allows new vehicles to enter the simulation from outside."
+    ::= { trafficSystemRoadEntry 10 }
+
+trafficSystemIsExitPoint OBJECT-TYPE
+    SYNTAX      TruthValue
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "True if vehicles can leave the system through this segment."
+    ::= { trafficSystemRoadEntry 11 }
+
+trafficSystemRoadRowStatus OBJECT-TYPE
+    SYNTAX      RowStatus
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "RowStatus object to allow dynamic creation and removal of roads via SNMP SET."
+    ::= { trafficSystemRoadEntry 12 }
+
+-- Crossing Rate Table (connections between roads)
+trafficSystemCrossingRateTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF TrafficSystemCrossingRateEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Table specifying allowed vehicle flows between connected road segments."
+    ::= { trafficSystemObjects 2 }
+
+trafficSystemCrossingRateEntry OBJECT-TYPE
+    SYNTAX      TrafficSystemCrossingRateEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "An entry describing the permitted crossing rate from a source to a destination road."
+    INDEX {
+        trafficSystemSourceRoadID,
+        trafficSystemDestinationRoadID
+    }
+    ::= { trafficSystemCrossingRateTable 1 }
+
+TrafficSystemCrossingRateEntry ::= SEQUENCE {
+    trafficSystemSourceRoadID    Integer32,
+    trafficSystemDestinationRoadID Integer32,
+    trafficSystemCrossingRate    Integer32,
+    trafficSystemCrossRowStatus  RowStatus
+}
+
+trafficSystemSourceRoadID OBJECT-TYPE
+    SYNTAX      Integer32 (1..1000)
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Index of the origin road segment."
+    ::= { trafficSystemCrossingRateEntry 1 }
+
+trafficSystemDestinationRoadID OBJECT-TYPE
+    SYNTAX      Integer32 (1..1000)
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION
+        "Index of the destination road segment."
+    ::= { trafficSystemCrossingRateEntry 2 }
+
+trafficSystemCrossingRate OBJECT-TYPE
+    SYNTAX      Integer32 (0..1000)
+    UNITS       "vehicles/minute"
+    MAX-ACCESS  read-write
+    STATUS      current
+    DESCRIPTION
+        "Configured flow rate between source and destination roads."
+    ::= { trafficSystemCrossingRateEntry 3 }
+
+trafficSystemCrossRowStatus OBJECT-TYPE
+    SYNTAX      RowStatus
+    MAX-ACCESS  read-create
+    STATUS      current
+    DESCRIPTION
+        "RowStatus enables creation/removal of connection entries at runtime."
+    ::= { trafficSystemCrossingRateEntry 4 }
+
+-- System Metrics
+trafficSystemPerformance OBJECT IDENTIFIER ::= { trafficSystemObjects 3 }
+
+trafficSystemTotalVehicles OBJECT-TYPE
+    SYNTAX      Integer32
+    UNITS       "vehicles"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Current total number of vehicles present in all the system."
+    ::= { trafficSystemPerformance 1 }
+
+trafficSystemAverageWaitingTime OBJECT-TYPE
+    SYNTAX      Integer32
+    UNITS       "seconds"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Average waiting time across all vehicles and traffic lights."
+    ::= { trafficSystemPerformance 2 }
+
+trafficSystemCongestionLevel OBJECT-TYPE
+    SYNTAX      Integer32 (0..100)
+    UNITS       "percent"
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION
+        "Congestion level in the system, from 0% (no congestion) to 100% (fully congested)."
+    ::= { trafficSystemPerformance 3 }
+
+-- Notifications / Traps
+trafficSystemTrap OBJECT IDENTIFIER ::= { trafficSystemTraps 0 }
+
+trafficCongestionAlert NOTIFICATION-TYPE
+    OBJECTS { trafficSystemCongestionLevel }
+    STATUS  current
+    DESCRIPTION
+        "Notification trap sent when system congestion exceeds threshold."
+    ::= { trafficSystemTrap 1 }
+
+trafficSemaphoreFailure NOTIFICATION-TYPE
+    OBJECTS { trafficSystemRoadID, trafficSystemSemaphoreColor }
+    STATUS  current
+    DESCRIPTION
+        "Notification trap for a detected traffic light failure."
+    ::= { trafficSystemTrap 2 }
+
+-- Conformance Groups
+trafficSystemCompliance MODULE-COMPLIANCE
+    STATUS      current
+    DESCRIPTION
+        "Compliance statement for traffic system MIB implementations."
+    MODULE
+        GROUP trafficSystemConfigGroup
+            DESCRIPTION "Configuration objects group."
+        GROUP trafficSystemRoadGroup
+            DESCRIPTION "Roadways group."
+        GROUP trafficSystemCrossingRateGroup
+            DESCRIPTION "Crossing rates group."
+        GROUP trafficSystemPerformanceGroup
+            DESCRIPTION "Performance metrics group."
+        GROUP trafficSystemNotificationGroup
+            DESCRIPTION "Notifications group."
+    ::= { trafficSystem 3 }
+
+trafficSystemConfigGroup OBJECT-GROUP
+    OBJECTS {
+        trafficSystemSimulationStep,
+        trafficSystemYellowTime,
+        trafficSystemStatus
+    }
+    STATUS  current
+    DESCRIPTION
+        "Group containing system-wide configuration objects."
+    ::= { trafficSystem 4 }
+
+trafficSystemRoadGroup OBJECT-GROUP
+    OBJECTS {
+        trafficSystemRoadID,
+        trafficSystemRoadName,
+        trafficSystemCurrentVehicles,
+        trafficSystemMaxCapacity,
+        trafficSystemTrafficGenerationRate,
+        trafficSystemSemaphoreColor,
+        trafficSystemGreenTime,
+        trafficSystemRedTime,
+        trafficSystemTimeRemaining,
+        trafficSystemIsEntryPoint,
+        trafficSystemIsExitPoint,
+        trafficSystemRoadRowStatus
+    }
+    STATUS current
+    DESCRIPTION
+        "Object group for managed road segments."
+    ::= { trafficSystem 5 }
+
+trafficSystemCrossingRateGroup OBJECT-GROUP
+    OBJECTS {
+        trafficSystemSourceRoadID,
+        trafficSystemDestinationRoadID,
+        trafficSystemCrossingRate,
+        trafficSystemCrossRowStatus
+    }
+    STATUS current
+    DESCRIPTION
+        "Object group for connections between road segments."
+    ::= { trafficSystem 6 }
+
+trafficSystemPerformanceGroup OBJECT-GROUP
+    OBJECTS {
+        trafficSystemTotalVehicles,
+        trafficSystemAverageWaitingTime,
+        trafficSystemCongestionLevel
+    }
+    STATUS current
+    DESCRIPTION
+        "Object group for traffic system metrics and statistics."
+    ::= { trafficSystem 7 }
+
+trafficSystemNotificationGroup NOTIFICATION-GROUP
+    NOTIFICATIONS {
+        trafficCongestionAlert,
+        trafficSemaphoreFailure
+    }
+    STATUS current
+    DESCRIPTION
+        "Group of system notification traps."
+    ::= { trafficSystem 8 }
+
+END
+
